@@ -1,56 +1,71 @@
 <template>
-  <q-page class="main">
+  <q-page class="flex column items-center justify-center">
     <img style="margin-bottom: 3rem;" src="public/images/odoo-logo.png" alt="oddo's logo" width="200">
-    <p>Login :</p>
-    <input class="input" type="text" v-model="username">
-    <P>Password :</P>
-    <input class="input" type="password" v-model="password">
-    <button @click="submitForm" class="signin">Sign In</button>
+    <q-form class="q-gutter-md flex column" @submit.prevent="submitForm">
+      <q-input type="email" v-model="state.email" label="Login :" autofocus
+        :rules="[(value) => !!value || 'Email is required',
+        (value) => /.+@.+\..+/.test(value) || 'Invalid email',]" />
+      <q-input  :type="state.isPwd ? 'password' : 'text'" v-model="state.password" label="Password :" >
+      <template v-slot:append>
+          <q-icon
+            :name="isPwd ? 'visibility_off' : 'visibility'"
+            class="cursor-pointer"
+            @click="state.isPwd = !state.isPwd"
+          />
+        </template>
+        </q-input>
+      <div v-if="authStore.loginError" class="text-negative">{{ authStore.loginError }}
+      </div>
+      <q-btn type="submit" rounded color="primary" text-color="white" primary class="q-mt-xl " label="Sign In" />
+    </q-form>
   </q-page>
 </template>
 
+
 <script>
-import { defineComponent, ref, } from 'vue'
-import jsonData from '/localStorage.json'
+import { defineComponent, ref, reactive, computed } from 'vue'
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '/src/stores/authStore';
+import { QInput, QBtn } from 'quasar';
+
 
 export default defineComponent({
   name: 'IndexPage',
   setup() {
-    const username = ref('')
-    const password = ref('')
+    const state = reactive({
+      email: '',
+      password: '',
+      isPwd: ref(true),
+    })
+    const rules = computed(() => {
+      return {
+        email: { required },
+        password: { required },
+      }
+    })
+    const v$ = useVuelidate(rules, state)
+
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     const submitForm = () => {
-      const user = jsonData.users.find((item) => item.username === username.value && item.password === password.value);
-      if (user) {
-        // Valid login and password
-        console.log('Login successful');
+      v$.value.$dirty = true;
+      if (v$.value.$error) {
+        console.log('Form not valid');
       } else {
-        // Invalid login or password
-        console.log('Invalid login or password');
+        authStore.login({ email: state.email, password: state.password });
+        if (authStore.isAuthenticated) {
+          console.log('Login successful');
+          router.push('/dashboard');
+        }
       }
     };
+
     return {
-      username, password, submitForm
+      state, v$, submitForm, authStore
     }
   }
 })
 </script>
-<style>
-.main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-}
-
-.input {
-  width: 40%;
-  margin-bottom: 0.5rem;
-}
-
-.signin {
-  width: 20%;
-  margin-top: 1.5rem;
-}
-</style>

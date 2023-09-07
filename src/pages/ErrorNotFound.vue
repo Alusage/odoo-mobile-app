@@ -5,8 +5,8 @@
         404
       </div>
 
-      <div class="text-h2" style="opacity:.4">
-        Oops. Nothing here...
+      <div >
+        <img src="public/images/404.jpg" alt="Peugeot 404" height="200">
       </div>
 
       <q-btn
