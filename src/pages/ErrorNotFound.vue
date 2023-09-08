@@ -6,7 +6,7 @@
       </div>
 
       <div >
-        <img src="public/images/404.jpg" alt="Peugeot 404" height="200">
+        <img src="/images/404.jpg" alt="Peugeot 404" height="200">
       </div>
 
       <q-btn

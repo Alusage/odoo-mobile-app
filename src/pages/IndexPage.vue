@@ -1,10 +1,10 @@
 <template>
   <q-page class="flex column items-center justify-center">
-    <img style="margin-bottom: 3rem;" src="public/images/odoo-logo.png" alt="oddo's logo" width="200">
+    <img style="margin-bottom: 3rem;" src="/images/odoo-logo.png" alt="oddo's logo" width="200">
     <q-form class="q-gutter-md flex column" @submit.prevent="submitForm">
       <q-input type="email" v-model="state.email" label="Login :" autofocus
-        :rules="[(value) => !!value || 'Email is required',
-        (value) => /.+@.+\..+/.test(value) || 'Invalid email',]" />
+        :rules="[(value) => !!value || 'Login is required']
+        " />
       <q-input  :type="state.isPwd ? 'password' : 'text'" v-model="state.password" label="Password :" >
       <template v-slot:append>
           <q-icon
