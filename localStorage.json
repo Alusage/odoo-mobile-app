@@ -1,6 +1,6 @@
 {
   "users": [
-    { "email": "tata@tata.ta", "password": "tata" },
-    { "email": "toto@toto.to", "password": "toto" }
+    { "database": "tata", "login": "tata", "password": "tata" },
+    { "database": "toto", "login": "toto", "password": "toto" }
   ]
 }

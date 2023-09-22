@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import jsonData from "/localStorage.json";
+import axios from 'axios';
+
 
 export const useAuthStore = defineStore({
   id: "auth",
@@ -12,17 +13,28 @@ export const useAuthStore = defineStore({
     isAuthenticated: (state) => !!state.user,
   },
   actions: {
-    login({ email, password }) {
-      const user = jsonData.users.find(
-        (item) => item.email === email && item.password === password
-      );
-      if (user) {
-        this.user = user;
-        this.loginError = "";
-      } else {
-        this.loginError = "Invalid login or password";
-      }
+
+    login({ db, login, password }) {
+      const payload = {
+        params: {
+          db: db,
+          login: login,
+          password: password
+        }
+      };
+
+      axios.post('https://apps.alusage.fr/web/session/authenticate', payload)
+        .then(response => {
+          const user = response.data;
+          this.user = user;
+          this.loginError = "";
+        })
+        .catch(error => {
+          this.loginError = "Invalid login or password";
+        });
     },
+
+
     logout() {
       this.user = null;
     },
