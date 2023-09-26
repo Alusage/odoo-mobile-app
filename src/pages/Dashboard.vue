@@ -83,7 +83,7 @@ export default defineComponent({
   name: 'DashboardPage',
   setup() {
     const state = reactive({
-      apikey: 'bf930d852ea8369607cd6cb113d686ed5fcaa71a',
+      apikey: 'JeSuisUneClef',
       name: '',
       loading: false,
       rows: [],
@@ -121,7 +121,7 @@ export default defineComponent({
       try {
         const url = 'https://apps.alusage.fr/base_rest_demo_api/private/partner/';
         const headers = {
-          'Authorization': 'Bearer ' + state.apikey,
+          'api-key': state.apikey,
           'Content-Type': 'application/json',
         };
         const params = {
@@ -153,7 +153,7 @@ export default defineComponent({
           phone: state.newphone,
         };
         const headers = {
-          'Authorization': `Bearer ${state.apiKey}`,
+          'api-key': state.apikey,
           'Content-Type': 'application/json',
         };
         await axios.post(url, data, { headers });
@@ -172,7 +172,7 @@ export default defineComponent({
         state.loading = true;
         const url = 'https://apps.alusage.fr/base_rest_demo_api/private/partner/';
         const headers = {
-          'Authorization': `Bearer ${state.apiKey}`,
+          'api-key': state.apikey,
           'Content-Type': 'application/json',
         };
         const params = {
@@ -210,7 +210,7 @@ const updateContact = async () => {
     phone: state.updatephone,
   };
   const headers = {
-    'Authorization': `Bearer ${state.apiKey}`,
+    'api-key': state.apikey,
     'Content-Type': 'application/json',
   };
   await axios.put(url, data, { headers });
