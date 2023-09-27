@@ -48,19 +48,28 @@ export default defineComponent({
 
 
 
-    const submitForm = () => {
-      if (v$.value.$error) {
-        loginError.value = 'Please fill out all fields correctly.';
-      } else {
-        // #ToDO Use authStore.js
-        const user = dataJson.users.find(user => user.database === state.database && user.login === state.login && user.password === state.password);
-        if (user) {
-          router.push('/Dashboard');
-        } else {
-          loginError.value = 'Invalid login credentials.';
-        }
-      }
-    };
+/**
+ * Submit the form after validating the input fields.
+ */
+   // #ToDO Use authStore.js
+const submitForm = () => {
+  if (v$.value.$error) {
+    loginError.value = 'Please fill out all fields correctly.';
+    return;
+  }
+
+  const user = dataJson.users.find(user => (
+    user.database === state.database &&
+    user.login === state.login &&
+    user.password === state.password
+  ));
+
+  if (user) {
+    router.push('/Dashboard');
+  } else {
+    loginError.value = 'Invalid login credentials.';
+  }
+};
 
 
 
