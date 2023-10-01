@@ -21,7 +21,7 @@
         "src/assets/*"
       ],
       "boot/*": [
-        "src/assets/boot/*"
+        "src/boot/*"
       ],
       "stores/*": [
         "src/stores/*"

@@ -1,5 +1,9 @@
 <template>
   <q-page class="flex column items-center justify-center">
+    <q-input type="text" v-model="state.db" label="Database:"
+      :rules="[(value) => !!value || 'Database is required']"></q-input>
+    <q-input type="text" v-model="state.myId" label="My ID:"
+      :rules="[(value) => !!value || 'My ID is required']"></q-input>
     <q-input type="text" v-model="state.apikey" label="API Key:"
       :rules="[(value) => !!value || 'API Key is required']"></q-input>
     <q-card>
@@ -17,9 +21,9 @@
           <div class="text-h6">Contact list</div>
           <q-form class="q-gutter-md flex column" @submit.prevent="fetchContactList">
 
-            <q-input type="text" v-model="state.name" label="Name :"
-              :rules="[(value) => !!value || 'Name is required']"></q-input>
-            <q-btn type="submit" rounded color="primary" text-color="white" primary class="q-mt-xl " label="Send" />
+
+            <q-btn type="submit" rounded color="primary" text-color="white" primary class="q-mt-xl "
+              label="Get contact list" />
           </q-form>
           <q-table class="q-mt-xl" :rows="state.rows" :columns="columns" row-key="name" />
         </q-tab-panel>
@@ -46,8 +50,8 @@
         </q-tab-panel>
         <q-tab-panel name="update">
           <div class="text-h6">Update Contact</div>
-          <q-form class="q-gutter-md flex column items-center" @submit.prevent="searchContactID"><q-input type="text"
-              v-model="state.id" label="ID :" autofocus> </q-input>
+          <q-form class="q-gutter-md flex column items-center" @submit.prevent="searchContactID">
+            <q-input type="text" v-model="state.id" label="ID :" autofocus> </q-input>
             <q-btn type="submit" rounded color="primary" text-color="white" primary class="q-mt-l " label="Search" />
           </q-form>
           <q-form class="q-gutter-md flex column items-center" @submit.prevent="updateContact">
@@ -83,9 +87,10 @@ export default defineComponent({
   name: 'DashboardPage',
   setup() {
     const state = reactive({
-      apikey: 'JeSuisUneClef',
+      apikey: '42584093f5ac1d2b71ff0978bc62a5e62b3f76fb',
+      db: 'odoo',
+      myId: '2',
       name: '',
-      loading: false,
       rows: [],
       id: '',
       updatename: '',
@@ -100,18 +105,19 @@ export default defineComponent({
       newzip: '',
       newcity: '',
       newphone: '',
-      updateId: '',
+      updateid: '',
 
     })
     const columns = [
-      { name: 'name', required: true, label: 'Name', align: 'left', field: 'name' },
-      { name: 'street', required: true, label: 'Street', align: 'left', field: 'street' },
+    { name: 'id', label: 'ID', align: 'left', field: 'id' },
+      { name: 'name', label: 'Name', align: 'left', field: 'name' },
+      { name: 'street', label: 'Street', align: 'left', field: 'street' },
       { name: 'street2', label: 'Street 2', align: 'left', field: 'street2' },
-      { name: 'zip', required: true, label: 'ZIP', align: 'left', field: 'zip' },
-      { name: 'city', required: true, label: 'City', align: 'left', field: 'city' },
+      { name: 'zip', label: 'ZIP', align: 'left', field: 'zip' },
+      { name: 'city', label: 'City', align: 'left', field: 'city' },
       { name: 'phone', label: 'Phone', align: 'left', field: 'phone' },
       { name: 'is_company', label: 'Is Company', align: 'left', field: 'is_company' },
-      { name: 'id', required: true, label: 'ID', align: 'left', field: 'id' },
+
     ]
 
     /**
@@ -119,48 +125,103 @@ export default defineComponent({
      */
     const fetchContactList = async () => {
       try {
-        const url = 'https://apps.alusage.fr/base_rest_demo_api/private/partner/';
-        const headers = {
-          'api-key': state.apikey,
-          'Content-Type': 'application/json',
-        };
-        const params = {
-          name: state.name,
+        const optionsSearch = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'search',
+                [[]]
+              ]
+            }
+          }
         };
 
-        state.loading = true;
-        const response = await axios.get(url, { headers, params });
-        state.rows = response.data.rows;
+
+        const responseSearch = await axios.request(optionsSearch);
+        const result = responseSearch.data.result;
+
+        const optionsRead = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'read',
+                [result]
+              ]
+            }
+          }
+        };
+
+
+        const responseRead = await axios.request(optionsRead);
+        state.rows = responseRead.data.result;
       } catch (error) {
         console.error(error);
-      } finally {
-        state.loading = false;
       }
+
     }
     /**
      * Creates a new contact by sending a POST request to the server.
      */
     const newContact = async () => {
       try {
-        state.loading = true;
-        const url = 'https://apps.alusage.fr/base_rest_demo_api/private/partner/';
-        const data = {
-          name: state.newname,
-          street: state.newstreet,
-          street2: state.newstreet2,
-          zip: state.newzip,
-          city: state.newcity,
-          phone: state.newphone,
+        const options = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'create',
+                [{
+                  name: state.newname,
+                  street: state.newstreet,
+                  street2: state.newstreet2,
+                  zip: state.newzip,
+                  city: state.newcity,
+                  phone: state.newphone,
+                }]
+              ]
+            }
+          }
         };
-        const headers = {
-          'api-key': state.apikey,
-          'Content-Type': 'application/json',
-        };
-        await axios.post(url, data, { headers });
-        state.loading = false;
+
+        await axios.request(options);
+
       } catch (error) {
         console.error(error);
-        state.loading = false;
       }
     };
     /**
@@ -169,17 +230,32 @@ export default defineComponent({
      */
     const searchContactID = async () => {
       try {
-        state.loading = true;
-        const url = 'https://apps.alusage.fr/base_rest_demo_api/private/partner/';
-        const headers = {
-          'api-key': state.apikey,
-          'Content-Type': 'application/json',
+
+        const optionsReadId = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'read',
+                [[Number(state.id)]]
+              ]
+            }
+          }
         };
-        const params = {
-          id: state.id,
-        };
-        const response = await axios.get(url, { headers, params });
-        const contact = response.data.rows[0];
+        const responseReadId = await axios.request(optionsReadId);
+
+        const contact = responseReadId.data.result[0];
         state.updateid = contact.id;
         state.updatename = contact.name;
         state.updatestreet = contact.street;
@@ -187,45 +263,69 @@ export default defineComponent({
         state.updatezip = contact.zip;
         state.updatecity = contact.city;
         state.updatephone = contact.phone;
+        console.log(contact);
+        console.log(state.updateid);
+        console.log(state.updatename);
 
-        state.loading = false;
+
+
       } catch (error) {
         console.error(error);
-        state.loading = false;
+
       }
     };
 
-/**
- * Updates a contact in the database.
- */
-const updateContact = async () => {
-  state.loading = true;
-  const url = `https://apps.alusage.fr/base_rest_demo_api/private/partner/${state.updateId}`;
-  const data = {
-    name: state.updatename,
-    street: state.updatestreet,
-    street2: state.updatestreet2,
-    zip: state.updatezip,
-    city: state.updatecity,
-    phone: state.updatephone,
-  };
-  const headers = {
-    'api-key': state.apikey,
-    'Content-Type': 'application/json',
-  };
-  await axios.put(url, data, { headers });
-  state.loading = false;
-};
+    /**
+     * Updates a contact in the database.
+     */
+    const updateContact = async () => {
+      try {
+        const options = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'write',
+                [[Number(state.updateid)], {
+                  name: state.updatename,
+                  street: state.updatestreet,
+                  street2: state.updatestreet2,
+                  zip: state.updatezip,
+                  city: state.updatecity,
+                  phone: state.updatephone,
+                }]
+              ]
+            }
+          }
+        };
 
-        return {
-          state,
-          fetchContactList,
-          newContact,
-          columns,
-          searchContactID,
-          updateContact,
-          tab: ref('list')
-        }
-      },
-    })
+        await axios.request(options);
+
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    return {
+      state,
+      fetchContactList,
+      newContact,
+      columns,
+      searchContactID,
+      updateContact,
+      tab: ref('list')
+    }
+  },
+})
 </script>

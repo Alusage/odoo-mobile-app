@@ -22,7 +22,7 @@ import { defineComponent, ref, reactive, computed } from 'vue'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useRouter } from 'vue-router';
-import dataJson from '/localStorage.json';
+import { useAuthStore } from 'src/stores/authStore';
 
 export default defineComponent({
   name: 'IndexPage',
@@ -44,6 +44,7 @@ export default defineComponent({
 
     const router = useRouter();
     const loginError = ref('');
+    const authStore = useAuthStore();
 
 
 
@@ -52,22 +53,23 @@ export default defineComponent({
  * Submit the form after validating the input fields.
  */
    // #ToDO Use authStore.js
-const submitForm = () => {
+   const submitForm = async () => {
   if (v$.value.$error) {
     loginError.value = 'Please fill out all fields correctly.';
-    return;
+
   }
 
-  const user = dataJson.users.find(user => (
-    user.database === state.database &&
-    user.login === state.login &&
-    user.password === state.password
-  ));
+  await authStore.login({
+    db: state.database,
+    login: state.login,
+    password: state.password
+  });
 
-  if (user) {
-    router.push('/Dashboard');
+
+  if (authStore.loginError) {
+    loginError.value = authStore.loginError;
   } else {
-    loginError.value = 'Invalid login credentials.';
+    router.push('/Dashboard');
   }
 };
 

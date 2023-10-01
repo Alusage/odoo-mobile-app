@@ -1,39 +1,50 @@
 import { defineStore } from "pinia";
-import axios from 'axios';
-
+import axios from "axios";
 
 export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
     user: null,
     loginError: "",
-
   }),
   getters: {
     isAuthenticated: (state) => !!state.user,
   },
   actions: {
+    async login({ db, login, password }) {
+      try {
+        const options = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'common',
+              method: 'login',
+              args: [db, login, password]
+            }
+          }
+        };
 
-    login({ db, login, password }) {
-      const payload = {
-        params: {
-          db: db,
-          login: login,
-          password: password
-        }
-      };
+        const response = await axios.request(options);
 
-      axios.post('https://apps.alusage.fr/web/session/authenticate', payload)
-        .then(response => {
-          const user = response.data;
-          this.user = user;
+
+        if (response.data.result === 2) {
+
+          this.user = response.data.result;
           this.loginError = "";
-        })
-        .catch(error => {
-          this.loginError = "Invalid login or password";
-        });
-    },
+        } else {
 
+          this.loginError = "Invalid login or password";
+        }
+      } catch (error) {
+        console.error(error); // Log the error object
+        this.loginError = "Invalid login or password";
+      }
+    },
 
     logout() {
       this.user = null;
