@@ -11,9 +11,31 @@
 
             Mobile App
         </q-toolbar-title>
-        <q-btn flat icon="o_notifications" @click="toggleNotificationDrawer"></q-btn>
+        <q-btn flat icon="o_notifications" class="on-left" size='md' @click="toggleNotificationDrawer"><q-badge color="red" floating >
+        4
+      </q-badge></q-btn>
         <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer"/>
-        <q-btn flat icon="o_account_circle" class="on-left" size='md' @click="toggleProfileDrawer"/>
+        <q-btn flat icon="o_account_circle" class="on-left" size='md' ><q-menu>
+        <div class="row no-wrap q-pa-md">
+          <div class="column items-center">
+            <q-avatar size="72px">
+              <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+            </q-avatar>
+
+            <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
+            <div class="text-subtitle1  q-mb-xs">app.alusage.fr</div>
+
+            <q-separator vertical inset class="q-mx-lg" />
+            <q-btn
+              color="primary"
+              label="Logout"
+              push
+              size="sm"
+              v-close-popup
+            />
+          </div>
+        </div>
+      </q-menu></q-btn>
       </q-toolbar>
     </q-header>
 
