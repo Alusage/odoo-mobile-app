@@ -1,9 +1,9 @@
 <template>
-  <q-layout view="lHh lpR lFf">
+  <q-layout view="hHh lpR lFf">
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn flat icon="o_menu" size='md'  @click="toggleLeftDrawer" />
+        <q-btn flat icon="o_menu" size='md'  @click="leftDrawer = !leftDrawer" />
 
         <q-toolbar-title>
 
@@ -11,9 +11,7 @@
 
             Mobile App
         </q-toolbar-title>
-        <q-btn flat icon="o_notifications" class="on-left" size='md' @click="toggleNotificationDrawer"><q-badge color="red" floating >
-        4
-      </q-badge></q-btn>
+
         <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer"/>
         <q-btn flat icon="o_account_circle" class="on-left" size='md' ><q-menu>
         <div class="row no-wrap q-pa-md">
@@ -39,8 +37,64 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" side="left" behavior="mobile" elevated>
-      Menu drawer
+    <q-drawer v-model="leftDrawer" side="left" show-if-above
+
+:mini="miniState"
+@mouseover="miniState = false"
+@mouseout="miniState = true"
+
+:width="200"
+:breakpoint="500"
+bordered>
+
+
+<q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+          <q-list padding>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-avatar  color="primary" text-color="white"  icon="o_home" />
+              </q-item-section>
+
+              <q-item-section>
+                Dashboard
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-avatar  color="orange" text-color="white"  icon="o_notifications" ><q-badge color="red" floating    >12</q-badge></q-avatar>
+
+              </q-item-section>
+
+              <q-item-section>
+                Notifications
+              </q-item-section>
+            </q-item>
+
+            <q-separator />
+
+            <q-item  clickable v-ripple>
+              <q-item-section avatar>
+                <q-avatar  color="purple" text-color="white"  icon="o_contact_page" />
+              </q-item-section>
+
+              <q-item-section>
+                Contact
+              </q-item-section>
+            </q-item>
+
+
+
+            <q-item clickable v-ripple>
+              <q-item-section avatar>
+                <q-avatar  color="green" text-color="white"  icon="o_task_alt" />
+              </q-item-section>
+
+              <q-item-section>
+                Task
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-scroll-area>
     </q-drawer>
     <q-drawer v-model="settingsDrawerOpen" side="right" behavior="mobile" elevated>
       Settings drawer
@@ -63,19 +117,20 @@ import { ref } from 'vue'
 
 export default {
   setup () {
-    const leftDrawerOpen = ref(false)
+    const leftDrawer = ref(false)
     const settingsDrawerOpen = ref(false)
     const profileDrawerOpen = ref(false)
     const notificationDrawerOpen = ref(false)
+    const miniState = ref(true)
+
 
     return {
-      leftDrawerOpen,
+      leftDrawer,
       settingsDrawerOpen,
       profileDrawerOpen,
       notificationDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      },
+      miniState,
+
       toggleSettingsDrawer () {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
@@ -87,6 +142,9 @@ export default {
       },
 
     }
+
+
+
   },
 }
 </script>

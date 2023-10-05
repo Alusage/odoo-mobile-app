@@ -1,6 +1,8 @@
 <template>
   <q-page padding>
-<q-btn flat rounded to='/contact'><q-avatar  color="purple" text-color="white" size="10rem" icon="o_contact_page" /><q-badge color="orange"  floating  >{{state ? state.countContactResult : ''}}</q-badge></q-btn>
+<q-btn flat rounded ><q-avatar  color="orange" text-color="white" size="10rem" icon="o_notifications" ><q-badge color="orange"  floating  >12</q-badge></q-avatar></q-btn>
+<q-btn flat rounded ><q-avatar  color="purple" text-color="white" size="10rem" icon="o_contact_page" ><q-badge color="orange"  floating  >{{state ? state.countContactResult : ''}}</q-badge></q-avatar></q-btn>
+<q-btn flat rounded ><q-avatar  color="green" text-color="white" size="10rem" icon="o_task_alt" ><q-badge color="orange"  floating  >24</q-badge></q-avatar></q-btn>
   </q-page>
 </template>
 
