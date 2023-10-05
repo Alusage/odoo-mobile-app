@@ -6,7 +6,7 @@ const contactRoutes = [
       {
         path: "",
         name: "contact",
-        component: () => import("src/pages/core/ContactPage.vue")
+        component: () => import("src/pages/contact/ContactPage.vue")
       }
     ]
 
