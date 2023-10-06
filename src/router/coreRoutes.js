@@ -19,6 +19,11 @@ const coreRoutes = [
 
         component: () => import("pages/core/DashboardPage.vue"),
       },
+      {
+        path: "/notification",
+
+        component: () => import("pages/core/NotificationPage.vue"),
+      },
     ],
   },
 

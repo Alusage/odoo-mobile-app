@@ -50,7 +50,7 @@ bordered>
 
 <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
           <q-list padding>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :active="isActive('/dashboard')" @click="navigateToPage('/dashboard')">
               <q-item-section avatar>
                 <q-avatar  color="primary" text-color="white"  icon="o_home" />
               </q-item-section>
@@ -59,7 +59,7 @@ bordered>
                 Dashboard
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :active="isActive('/notification')" @click="navigateToPage('/notification')">
               <q-item-section avatar>
                 <q-avatar  color="orange" text-color="white"  icon="o_notifications" ><q-badge color="red" floating    >12</q-badge></q-avatar>
 
@@ -72,7 +72,7 @@ bordered>
 
             <q-separator />
 
-            <q-item  clickable v-ripple>
+            <q-item  clickable v-ripple :active="isActive('/contact')" @click="navigateToPage('/contact')">
               <q-item-section avatar>
                 <q-avatar  color="purple" text-color="white"  icon="o_contact_page" />
               </q-item-section>
@@ -84,7 +84,7 @@ bordered>
 
 
 
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple :active="isActive('/task')" @click="navigateToPage('/task')">
               <q-item-section avatar>
                 <q-avatar  color="green" text-color="white"  icon="o_task_alt" />
               </q-item-section>
@@ -114,6 +114,7 @@ bordered>
 
 <script>
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
   setup () {
@@ -123,13 +124,24 @@ export default {
     const notificationDrawerOpen = ref(false)
     const miniState = ref(true)
 
+    const router = useRouter();
+    const route = useRoute();
 
+const navigateToPage = (path) => {
+  router.push(path);
+}
+ const isActive = (path) => {
+  return route.path === path;
+ }
     return {
       leftDrawer,
       settingsDrawerOpen,
       profileDrawerOpen,
       notificationDrawerOpen,
       miniState,
+      navigateToPage,
+      isActive,
+
 
       toggleSettingsDrawer () {
         settingsDrawerOpen.value = !settingsDrawerOpen.value

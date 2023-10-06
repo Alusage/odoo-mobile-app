@@ -1,14 +1,27 @@
 <template>
   <q-page padding>
-<q-btn flat rounded ><q-avatar  color="orange" text-color="white" size="10rem" icon="o_notifications" ><q-badge color="orange"  floating  >12</q-badge></q-avatar></q-btn>
-<q-btn flat rounded ><q-avatar  color="purple" text-color="white" size="10rem" icon="o_contact_page" ><q-badge color="orange"  floating  >{{state ? state.countContactResult : ''}}</q-badge></q-avatar></q-btn>
-<q-btn flat rounded ><q-avatar  color="green" text-color="white" size="10rem" icon="o_task_alt" ><q-badge color="orange"  floating  >24</q-badge></q-avatar></q-btn>
+    <q-btn flat rounded @click="navigateToPage('/notification')">
+      <q-avatar color="orange" text-color="white" size="10rem" icon="o_notifications">
+        <q-badge color="orange" floating>12</q-badge>
+      </q-avatar>
+    </q-btn>
+    <q-btn flat rounded @click="navigateToPage('/contact')">
+      <q-avatar color="purple" text-color="white" size="10rem" icon="o_contact_page">
+        <q-badge color="orange" floating>{{state ? state.countContactResult : ''}}</q-badge>
+      </q-avatar>
+    </q-btn>
+    <q-btn flat rounded @click="navigateToPage('/task')">
+      <q-avatar color="green" text-color="white" size="10rem" icon="o_task_alt">
+        <q-badge color="orange" floating>24</q-badge>
+      </q-avatar>
+    </q-btn>
   </q-page>
 </template>
 
 <script>
 import axios from 'axios'
 import { defineComponent, reactive, onMounted } from 'vue'
+import {  useRouter } from 'vue-router'
 export default defineComponent({
   name: 'DashboardPage',
   setup() {
@@ -57,6 +70,18 @@ export default defineComponent({
       };
     }
 
+
+    const router = useRouter();
+
+    const navigateToPage = (path) => {
+      router.push(path);
+    }
+
+
+
+
+
+
   onMounted(() => {
     countContact()
   })
@@ -64,6 +89,8 @@ export default defineComponent({
     return {
       state,
       countContact,
+      navigateToPage,
+
 
     }
     }
