@@ -26,9 +26,9 @@ export default defineComponent({
   name: 'DashboardPage',
   setup() {
     const state = reactive({
-      apikey: '42584093f5ac1d2b71ff0978bc62a5e62b3f76fb',
+      apikey: 'njeudy',
       db: 'odoo',
-      myId: '2',
+      myId: '6',
       countContactResult : 0,
 
 

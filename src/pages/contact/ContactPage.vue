@@ -1,16 +1,13 @@
 <template>
-  <q-page padding>
-    <div class="q-pa-md">
+  <q-page>
+    <div>
       <q-list bordered separator>
 
 
         <q-item clickable v-ripple v-for="(contact, id) in state.rows" :key="id" @click="showContactCard(contact)">
-          <q-item-section  avatar >
-
-            <q-avatar v-if="getBase64Image(contact)"
-              >
-              <!-- :style="{ border: `4px solid ${getBorderColor(contact.name)}` }" -->
-              <img :class="border-blue" :src="getBase64Image(contact)">
+          <q-item-section avatar>
+            <q-avatar v-if="getBase64Image(contact)">
+              <img :src="getBase64Image(contact)">
             </q-avatar>
             <q-avatar v-else-if="contact.company_name" :color="getAvatarColor(contact.company_name)" text-color="white"
              >
@@ -40,7 +37,7 @@
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn fab icon="add" color="purple" @click="addNewContactDialog = true"></q-btn>
     </q-page-sticky>
-    <q-dialog persistent v-model="addNewContactDialog">
+    <q-dialog persistent maximized v-model="addNewContactDialog">
       <q-card>
         <q-card-section>
           <div class="text-h6">New Contact</div>
@@ -91,9 +88,9 @@ export default defineComponent({
   },
   setup() {
     const state = reactive({
-      apikey: '42584093f5ac1d2b71ff0978bc62a5e62b3f76fb',
+      apikey: 'njeudy',
       db: 'odoo',
-      myId: '2',
+      myId: '6',
       rows: [],
 
     })
@@ -120,7 +117,10 @@ export default defineComponent({
                 state.apikey,
                 'res.partner',
                 'search_read',
-                [[]]
+                [[]],
+                {
+                  fields: ['name', 'email_normalized', 'phone', 'image_1920'],
+                }
               ]
             }
           }

@@ -14,30 +14,27 @@ export const useAuthStore = defineStore({
     async login({ db, login, password }) {
       try {
         const options = {
-          method: 'POST',
-          url: 'https://apps.alusage.fr/jsonrpc',
+          method: "POST",
+          url: "https://apps.alusage.fr/jsonrpc",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           data: {
-            jsonrpc: '2.0',
+            jsonrpc: "2.0",
             params: {
-              service: 'common',
-              method: 'login',
-              args: [db, login, password]
-            }
-          }
+              service: "common",
+              method: "login",
+              args: [db, login, password],
+            },
+          },
         };
 
         const response = await axios.request(options);
 
-
-        if (response.data.result === 2) {
-
+        if (response.data.result) {
           this.user = response.data.result;
           this.loginError = "";
         } else {
-
           this.loginError = "Invalid login or password";
         }
       } catch (error) {
