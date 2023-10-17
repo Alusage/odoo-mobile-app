@@ -3,25 +3,25 @@ const coreRoutes = [
     path: "/",
     component: () => import("layouts/LoginLayout.vue"),
     children: [
-      { path: "", component: () => import("pages/core/IndexPage.vue") },
+      { path: "", name: "Login", component: () => import("pages/core/IndexPage.vue") },
 
 
     ],
   },
   {
-    path: "/*",
+    path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
 
 
       {
-        path: "/dashboard",
-
+        path: "dashboard",
+name: "Dashboard",
         component: () => import("pages/core/DashboardPage.vue"),
       },
       {
-        path: "/notification",
-
+        path: "notification",
+name: "Notification",
         component: () => import("pages/core/NotificationPage.vue"),
       },
     ],

@@ -21,14 +21,14 @@
 <script>
 import axios from 'axios'
 import { defineComponent, reactive, onMounted } from 'vue'
-import {  useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'DashboardPage',
   setup() {
     const state = reactive({
-      apikey: 'njeudy',
+      apikey: 'admin',
       db: 'odoo',
-      myId: '6',
+      myId: '2',
       countContactResult : 0,
 
 

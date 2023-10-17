@@ -6,16 +6,14 @@
 
         <q-item clickable v-ripple v-for="(contact, id) in state.rows" :key="id" @click="showContactCard(contact)">
           <q-item-section avatar>
+            <!-- #ToDo : Get the color by the companies name -->
+            <!-- #ToDo : Put a colored ring around the avatar from the companie name  -->
             <q-avatar v-if="getBase64Image(contact)">
               <img :src="getBase64Image(contact)">
             </q-avatar>
-            <q-avatar v-else-if="contact.company_name" :color="getAvatarColor(contact.company_name)" text-color="white"
-             >
+            <q-avatar v-else :color="getAvatarColor(contact.name)" text-color="white">
               {{ getInitials(contact.name) }}
             </q-avatar>
-            <!-- <q-avatar v-else :color="getAvatarColor(contact.name)" text-color="white">
-              {{ getInitials(contact.name) }}
-            </q-avatar> -->
 
 
           </q-item-section>
@@ -88,9 +86,9 @@ export default defineComponent({
   },
   setup() {
     const state = reactive({
-      apikey: 'njeudy',
+      apikey: 'admin',
       db: 'odoo',
-      myId: '6',
+      myId: '2',
       rows: [],
 
     })
@@ -119,7 +117,7 @@ export default defineComponent({
                 'search_read',
                 [[]],
                 {
-                  fields: ['name', 'email_normalized', 'phone', 'image_1920'],
+                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city',],
                 }
               ]
             }
@@ -131,6 +129,7 @@ export default defineComponent({
         state.rows = response.data.result;
 
         console.log(state.rows)
+        console.log(state.rows[10].name)
       } catch (error) {
         console.error(error);
       }

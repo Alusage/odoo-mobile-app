@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR lFf">
+  <q-layout view="hHh Lpr lff">
 
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
@@ -7,9 +7,7 @@
 
         <q-toolbar-title>
 
-          <img src="\images\odoo-logo.png" width="100">
-
-          Mobile App
+          {{ pageTitle }}
         </q-toolbar-title>
 
         <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer" />
@@ -35,7 +33,7 @@
       @mouseout="miniState = true" :width="200" :breakpoint="500" bordered>
 
 
-      <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
+      <q-scroll-area class="fit">
         <q-list padding>
           <q-item clickable v-ripple :active="isActive('/dashboard')" @click="navigateToPage('/dashboard')">
             <q-item-section avatar>
@@ -85,16 +83,25 @@
       </q-scroll-area>
     </q-drawer>
     <q-drawer v-model="settingsDrawerOpen" side="right" behavior="mobile" elevated>
-      <q-list>
+
+      <q-list bordered separator>
         <q-item-label header>Settings</q-item-label>
+
+        <q-separator></q-separator>
+        <q-item>
+          <q-button></q-button>
+        </q-item>
+
+        <!-- Add this block for the list of servers -->
+        <q-item-label header>Servers</q-item-label>
+        <q-item v-for="(server,id) in state.servers" :key="id">
+          <q-item-section>{{ server.x_url }}</q-item-section>
+        </q-item>
       </q-list>
+
     </q-drawer>
-    <q-drawer v-model="profileDrawerOpen" side="right" behavior="mobile" elevated>
-      Profile drawer
-    </q-drawer>
-    <q-drawer v-model="notificationDrawerOpen" side="right" behavior="mobile" elevated>
-      Notification drawer
-    </q-drawer>
+
+
 
     <q-page-container>
       <router-view />
@@ -103,28 +110,34 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref , onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter, } from 'vue-router'
-import { onMounted, reactive } from 'vue'
 import axios from 'axios'
+import { useQuasar, Dark } from 'quasar'
 
 export default {
   setup() {
     const state = reactive({
-      apikey: 'admin',
-      db: 'odoo',
-      myId: '2',
-      rows: [],
+      Uapikey: 'admin',
+      Udb: 'odoo',
+      UmyId: '2',
+      servers: [],
+      rowsApi: ref([]),
+
 
     })
+    const $q = useQuasar();
     const leftDrawer = ref(false)
     const settingsDrawerOpen = ref(false)
-    const profileDrawerOpen = ref(false)
-    const notificationDrawerOpen = ref(false)
     const miniState = ref(true)
 
     const router = useRouter();
     const route = useRoute();
+   const pageTitle = ref(''); // initialize pageTitle as a ref
+
+   watch(route, (newRoute) => {
+     pageTitle.value = newRoute.name; // update pageTitle with the new route's name
+   });
 
     const navigateToPage = (path) => {
       router.push(path);
@@ -146,12 +159,12 @@ export default {
               service: 'object',
               method: 'execute_kw',
               args: [
-                state.db,
-                state.myId,
-                state.apikey,
+                state.Udb,
+                state.UmyId,
+                state.Uapikey,
                 'x_server_login',
                 'search_read',
-                [[["x_local_user_id", "=", Number(state.myId)]]],
+                [[["x_local_user_id", "=", Number(state.UmyId)]]],
 
 
 
@@ -159,76 +172,38 @@ export default {
             }
           }
         };
-        const response = await axios.request(options);
-        state.rows = response.data.result;
+        const responseServer = await axios.request(options);
+        state.servers = responseServer.data.result;
 
-        console.log(state.rows)
+        console.log(state.servers)
       } catch (error) {
         console.error(error);
       }
 
     }
-    const fetchApiKeys = async () => {
-      try {
-        const options = {
-          method: 'POST',
-          url: 'https://apps.alusage.fr/jsonrpc',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: {
-            jsonrpc: '2.0',
-            params: {
-              service: 'object',
-              method: 'execute_kw',
-              args: [
-                state.db,
-                state.myId,
-                state.apikey,
-                'res.users.apikeys',
-                '_generate',
-                [[]],
 
-
-
-              ]
-            }
-          }
-        };
-        const responseapi = await axios.request(options);
-        state.rowsapi = responseapi.data.result;
-
-        console.log(state.rowsapi)
-      } catch (error) {
-        console.error(error);
-      }
-
-    }
     onMounted(() => {
       fetchServerList()
-      fetchApiKeys()
+
     })
     return {
+      state,
       leftDrawer,
       settingsDrawerOpen,
-      profileDrawerOpen,
-      notificationDrawerOpen,
       miniState,
       navigateToPage,
       isActive,
       fetchServerList,
-      fetchApiKeys,
+      pageTitle,
+
+
 
 
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
-      toggleProfileDrawer() {
-        profileDrawerOpen.value = !profileDrawerOpen.value
-      },
-      toggleNotificationDrawer() {
-        notificationDrawerOpen.value = !notificationDrawerOpen.value
-      },
+
+
 
     }
 

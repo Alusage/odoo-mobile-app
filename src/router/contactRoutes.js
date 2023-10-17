@@ -5,7 +5,7 @@ const contactRoutes = [
     children: [
       {
         path: "",
-        name: "contact",
+        name: "Contact",
         component: () => import("src/pages/contact/ContactPage.vue")
       }
     ]
