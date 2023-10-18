@@ -88,11 +88,9 @@
         <q-item-label header>Settings</q-item-label>
 
         <q-separator></q-separator>
-        <q-item>
-          <q-button></q-button>
-        </q-item>
 
-        <!-- Add this block for the list of servers -->
+
+       
         <q-item-label header>Servers</q-item-label>
         <q-item v-for="(server,id) in state.servers" :key="id">
           <q-item-section>{{ server.x_url }}</q-item-section>

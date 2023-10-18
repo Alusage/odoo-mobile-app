@@ -1,10 +1,22 @@
 <template>
   <q-page>
     <div>
-      <q-list bordered separator>
+      <q-toolbar > <q-input outlined v-model="state.searchTerm" label="Search contacts" /></q-toolbar>
 
+       <q-virtual-scroll
+         :items="filteredContacts"
+         :items-fn="() => filteredContacts"
+         separator
+         :item-key="item => item.id"
+         virtual-scroll-slice-size="10"
+       >
 
-        <q-item clickable v-ripple v-for="(contact, id) in state.rows" :key="id" @click="showContactCard(contact)">
+          <q-intersection
+           v-for="(contact, id) in state.rows"
+           :key="id"
+           transition="jump-right"
+           style="height: 56px;">
+          <q-item clickable v-ripple  @click="showContactCard(contact)">
           <q-item-section avatar>
             <!-- #ToDo : Get the color by the companies name -->
             <!-- #ToDo : Put a colored ring around the avatar from the companie name  -->
@@ -14,23 +26,13 @@
             <q-avatar v-else :color="getAvatarColor(contact.name)" text-color="white">
               {{ getInitials(contact.name) }}
             </q-avatar>
-
-
           </q-item-section>
           <q-item-section>
             {{ contact.name }}
           </q-item-section>
-          <q-separator vertical inset />
-          <q-item-section side>
-            <q-btn icon="o_mail" size="md" @click="sendEmail(contact.email_normalized)"></q-btn>
-          </q-item-section>
-          <q-item-section side>
-            <q-btn icon="o_phone" size="md" @click="startCall(contact.phone)"></q-btn>
-          </q-item-section>
         </q-item>
-
-
-      </q-list>
+        </q-intersection>
+        </q-virtual-scroll>
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn fab icon="add" color="purple" @click="addNewContactDialog = true"></q-btn>
@@ -71,7 +73,7 @@
 
 <script>
 import axios from 'axios'
-import { defineComponent, reactive, onMounted, ref } from "vue";
+import { defineComponent, reactive, onMounted, ref, computed } from "vue";
 import { Notify, getCssVar } from 'quasar'
 import ContactCard from '../../components/ContactCard.vue';
 
@@ -90,6 +92,7 @@ export default defineComponent({
       db: 'odoo',
       myId: '2',
       rows: [],
+      searchTerm: '',
 
     })
     const addNewContactDialog = ref(false);
@@ -166,12 +169,16 @@ const getBorderColor = (name) => {
 
 
 
-    const sendEmail = (email) => {
-      window.open(`mailto:${email}`);
-    }
-    const startCall = (phoneNumber) => {
-      window.open(`tel:${phoneNumber}`);
-    }
+const filteredContacts = computed(() => {
+  if (!state.searchTerm) {
+    return state.rows;
+  }
+  return state.rows.filter(contact =>
+    contact.name.toLowerCase().includes(state.searchTerm.toLowerCase())
+  );
+});
+
+
     const showContactCard = (contact) => {
       selectedContact.value = contact;
       dialogVisible.value = true;
@@ -237,8 +244,6 @@ const getBorderColor = (name) => {
     return {
       state,
       fetchContactList,
-      sendEmail,
-      startCall,
       newContact,
       getAvatarColor,
       getInitials,
@@ -250,6 +255,7 @@ const getBorderColor = (name) => {
       showContactCard,
       ContactCard,
       getBorderColor,
+      filteredContacts
 
 
     }
