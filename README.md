@@ -6,9 +6,13 @@ A simple odoo mobile app
 ```bash
 npm install
 ```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+## Install Quasar CLI
 ```bash
-npm run dev
+npm install -g @quasar/cli
+```
+
+## Start the app in development mode (hot-code reloading, error reporting, etc.)
+```bash
+quasar dev
 ```
 
