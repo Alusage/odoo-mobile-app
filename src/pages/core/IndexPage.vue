@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex column items-center justify-center">
-    <img style="margin-bottom: 3rem;" src="/images/odoo-logo.png" alt="oddo's logo" width="200">
+    <img style="margin-bottom: 3rem;" src="/images/odoo.png" alt="oddo's logo" width="200">
     <q-form class="q-gutter-md flex column" @submit.prevent="submitForm">
       <q-input type="text" v-model="state.database" label="Database :" autofocus
         :rules="[(value) => !!value || 'Database is required']"></q-input>

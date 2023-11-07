@@ -56,6 +56,16 @@ module.exports = configure(function (/* ctx */) {
       },
 
       vueRouterMode: "hash", // available values: 'hash', 'history'
+
+      viteOption: { // Vite configuration for CSS and Sass
+        css : {
+          preprocessorOptions: { // Configure the Sass preprocessor
+            sass: { 
+              additionalData: `@import 'src/css/app.sass';` // Include custom Sass data, e.g., variables and mixins
+            }
+          }
+        }
+      }
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
