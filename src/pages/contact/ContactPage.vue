@@ -75,6 +75,7 @@
 import axios from 'axios'
 import { defineComponent, reactive, onMounted, ref, computed } from "vue";
 import { Notify, getCssVar } from 'quasar'
+// import ContactPreview from '../../components/ContactPreview.vue';
 import ContactCard from '../../components/ContactCard.vue';
 
 
@@ -84,7 +85,8 @@ export default defineComponent({
 
   name: 'ContactPage',
   components: {
-    ContactCard
+    ContactCard, 
+    // ContactPreview,
   },
   setup() {
     const state = reactive({
@@ -93,7 +95,6 @@ export default defineComponent({
       myId: '2',
       rows: [],
       searchTerm: '',
-
     })
     const addNewContactDialog = ref(false);
     const dialogVisible = ref(false);
@@ -166,8 +167,6 @@ const getBorderColor = (name) => {
       getInitials = (name) => {
         return name.charAt(0).toUpperCase();
       }
-
-
 
 const filteredContacts = computed(() => {
   if (!state.searchTerm) {
@@ -254,6 +253,7 @@ const filteredContacts = computed(() => {
       selectedContact,
       showContactCard,
       ContactCard,
+      // ContactPeview,
       getBorderColor,
       filteredContacts
 
