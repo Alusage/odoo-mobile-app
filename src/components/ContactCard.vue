@@ -8,11 +8,14 @@
     <p> {{ contact.phone }}</p>
     <p> {{ contact.email }}</p> -->
 
-    <q-card class="my-card" flat bordered>
+    <q-card class="my-card" flat bordered rounded>
       <q-item>
         <q-item-section avatar>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+            <img v-if="getBase64Image(contact)" :src="getBase64Image(contact)" alt="contact picture">
+            <q-avatar v-else>
+              {{ getInitials(contact.name) }}
+            </q-avatar>
           </q-avatar>
         </q-item-section>
 
@@ -43,9 +46,10 @@
         <q-btn-toggle :options ="[
           {label: 'Udpate', value: 'info', icon: 'update'},
           {label: 'Delete', value: 'deleteContact', icon: 'delete'},
-          {label: 'Share infos', value: 'share', icon: 'share'},
           {label: 'Add Task', value: 'addTask', icon: 'add_task'},
-        ]"/>
+        ]" 
+        rounded
+        label-class="q-btn-toggle-label-custom"/>
         </q-item>
     </q-card>
   </div>
@@ -58,6 +62,23 @@ export default {
       type: Object,
       required: true
     }
+  }, 
+  methods: {
+    getBase64Image(contact) {
+      return contact.image_1920 ? `data:image/png;base64,${contact.image_1920}` : null;
+    },
+    getAvatarColor(name) {
+      const hash = [...name].reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+
+      return colors[Math.abs(hash % colors.length)];
+    },
+    getInitials(name) {
+      return name.charAt(0).toUpperCase();
+    }
+
   }
 }
 </script>
+
+
+
