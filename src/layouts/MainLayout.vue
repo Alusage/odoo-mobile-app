@@ -10,8 +10,14 @@
           {{ pageTitle }}
         </q-toolbar-title>
 
-        <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer" />
-        <q-btn flat icon="o_account_circle" class="on-left" size='md'><q-menu>
+        <q-toggle 
+        checked-icon="dark_mode" 
+        unchecked-icon="light_mode" 
+        v-model="darkModeToggle" 
+        color="dark"></q-toggle>
+
+        <q-btn flat icon="o_account_circle" class="on-left" size='md'>
+          <q-menu>
             <div class="row no-wrap q-pa-md">
               <div class="column items-center">
                 <q-avatar size="72px">
@@ -25,7 +31,11 @@
                 <q-btn color="primary" label="Logout" push size="sm" v-close-popup />
               </div>
             </div>
-          </q-menu></q-btn>
+          </q-menu>
+        </q-btn>
+
+        <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer" />
+        
       </q-toolbar>
     </q-header>
 
@@ -35,7 +45,7 @@
 
       <q-scroll-area class="fit">
         <q-list padding>
-          <q-item clickable v-ripple :active="isActive('/dashboard')" @click="navigateToPage('/dashboard')">
+          <q-item clickable v-ripple :active="isRouteActive('/dashboard')" @click="navigateToPage('/dashboard')">
             <q-item-section avatar>
               <q-avatar color="primary" text-color="white" icon="o_home" />
             </q-item-section>
@@ -44,7 +54,7 @@
               Dashboard
             </q-item-section>
           </q-item>
-          <q-item clickable v-ripple :active="isActive('/notification')" @click="navigateToPage('/notification')">
+          <q-item clickable v-ripple :active="isRouteActive('/notification')" @click="navigateToPage('/notification')">
             <q-item-section avatar>
               <q-avatar color="orange" text-color="white" icon="o_notifications"><q-badge color="red"
                   floating>12</q-badge></q-avatar>
@@ -58,7 +68,7 @@
 
           <q-separator />
 
-          <q-item clickable v-ripple :active="isActive('/contact')" @click="navigateToPage('/contact')">
+          <q-item clickable v-ripple :active="isRouteActive('/contact')" @click="navigateToPage('/contact')">
             <q-item-section avatar>
               <q-avatar color="purple" text-color="white" icon="o_contact_page" />
             </q-item-section>
@@ -70,7 +80,7 @@
 
 
 
-          <q-item clickable v-ripple :active="isActive('/task')" @click="navigateToPage('/task')">
+          <q-item clickable v-ripple :active="isRouteActive('/task')" @click="navigateToPage('/task')">
             <q-item-section avatar>
               <q-avatar color="green" text-color="white" icon="o_task_alt" />
             </q-item-section>
@@ -99,7 +109,11 @@
 
     </q-drawer>
 
-
+    <q-footer elevated>
+        <q-toolbar>
+          
+        </q-toolbar>
+      </q-footer>
 
     <q-page-container>
       <router-view />
@@ -111,9 +125,11 @@
 import { ref , onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter, } from 'vue-router'
 import axios from 'axios'
-import { useQuasar, Dark } from 'quasar'
+import { useQuasar } from 'quasar'
+
 
 export default {
+  name: 'MainLayout',
   setup() {
     const state = reactive({
       Uapikey: 'admin',
@@ -123,24 +139,24 @@ export default {
       rowsApi: ref([]),
 
 
-    })
+    }) ; 
+
     const $q = useQuasar();
     const leftDrawer = ref(false)
     const settingsDrawerOpen = ref(false)
     const miniState = ref(true)
+    const pageTitle = ref('');
 
     const router = useRouter();
     const route = useRoute();
-   const pageTitle = ref(''); // initialize pageTitle as a ref
 
    watch(route, (newRoute) => {
      pageTitle.value = newRoute.name; // update pageTitle with the new route's name
    });
-
     const navigateToPage = (path) => {
       router.push(path);
     }
-    const isActive = (path) => {
+    const isRouteActive = (path) => {
       return route.path === path;
     }
     const fetchServerList = async () => {
@@ -190,23 +206,13 @@ export default {
       settingsDrawerOpen,
       miniState,
       navigateToPage,
-      isActive,
+      isRouteActive,
       fetchServerList,
       pageTitle,
-
-
-
-
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
-
-
-
-    }
-
-
-
+    } ; 
   },
-}
+} ; 
 </script>
