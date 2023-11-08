@@ -24,6 +24,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/authStore';
 
+
 export default defineComponent({
   name: 'IndexPage',
   setup() {
@@ -46,7 +47,9 @@ export default defineComponent({
     const loginError = ref('');
     const authStore = useAuthStore();
 
+    
 
+    
 
 
 /**
@@ -73,13 +76,14 @@ export default defineComponent({
   }
 };
 
-
-
-
-
     return {
       state, v$, submitForm, loginError
     }
   }
+  
+
 })
+
+
+
 </script>
