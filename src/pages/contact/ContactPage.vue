@@ -121,7 +121,7 @@ export default defineComponent({
                 'search_read',
                 [[]],
                 {
-                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city',],
+                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city','write_date','function'],
                 }
               ]
             }
