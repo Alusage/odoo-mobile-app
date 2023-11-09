@@ -45,7 +45,7 @@
       <q-item>
         <q-btn-toggle :options ="[
           {label: 'Udpate', value: 'info', icon: 'update'},
-          {label: 'Delete', value: 'deleteContact', icon: 'delete'},
+          {label: 'Archive', value: 'archiveContact', icon: 'archive'},
           {label: 'Add Task', value: 'addTask', icon: 'add_task'},
         ]" 
         rounded
