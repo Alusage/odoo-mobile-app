@@ -216,3 +216,12 @@ export default {
   },
 } ; 
 </script>
+
+<style lang="scss">
+
+.q-header {
+  background-color: $color-primary-light ;
+  color: $color-on-primary-light
+}
+
+</style>

@@ -22,8 +22,9 @@
         <q-item-section>
           <q-item-label>{{ contact.name || "Name not specified" }}</q-item-label>
           <q-item-label caption>
-            {{ contact.email || "Email not specified" }}, {{ contact.phone || "Phone not specified" }}
+             {{ contact.email || "Email not specified" }}, {{ contact.phone || "Phone not specified" }}
           </q-item-label>
+          
         </q-item-section>
       </q-item>
 
@@ -31,7 +32,7 @@
 
       <q-card-section horizontal>
         <q-card-section>
-          {{ contact.city || "City not specified" }}, {{ contact.zip || "ZIP code not specified" }}
+          {{ contact.city || "City not specified" }}, {{ contact.zip || "ZIP code not specified" }}, {{ contact.function || "job not specified" }}
         </q-card-section>
 
         <q-separator vertical />
