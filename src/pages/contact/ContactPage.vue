@@ -1,15 +1,9 @@
 <template>
   <q-page>
     <div>
-      <q-toolbar > <q-input outlined v-model="state.searchTerm" label="Search contacts" /></q-toolbar>
+      <!-- <q-toolbar > <q-input outlined v-model="state.searchTerm" label="Search contacts" /></q-toolbar> -->
 
-       <q-virtual-scroll
-         :items="filteredContacts"
-         :items-fn="() => filteredContacts"
-         separator
-         :item-key="item => item.id"
-         virtual-scroll-slice-size="10"
-       >
+
 
           <q-intersection
            v-for="(contact, id) in state.rows"
@@ -32,7 +26,7 @@
           </q-item-section>
         </q-item>
         </q-intersection>
-        </q-virtual-scroll>
+
     </div>
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn fab icon="add" color="purple" @click="addNewContactDialog = true"></q-btn>
@@ -99,6 +93,11 @@ export default defineComponent({
     const dialogVisible = ref(false);
     const selectedContact = ref(null);
 
+    /**
+     * Fetches the contact list from the server.
+     *
+     * @return {Promise<void>} - A Promise that resolves when the contact list is fetched successfully.
+     */
     const fetchContactList = async () => {
       try {
         const options = {
@@ -131,8 +130,7 @@ export default defineComponent({
         const response = await axios.request(options);
         state.rows = response.data.result;
 
-        console.log(state.rows)
-        console.log(state.rows[10].name)
+
       } catch (error) {
         console.error(error);
       }
@@ -142,20 +140,32 @@ export default defineComponent({
       fetchContactList();
     })
 
+    /**
+     * Generates a base64 image URL for a given contact.
+     *
+     * @param {Object} contact - The contact object.
+     * @return {string|null} The base64 image URL or null if no image is available.
+     */
     const getBase64Image = (contact) => {
       return contact.image_1920 ? `data:image/png;base64,${contact.image_1920}` : null;
     }
-const getBorderColor = (name) => {
-  const colorName = "dark";
-  let color = getCssVar(`${colorName}`);
-  console.log(colorName + '=' +  color);
-  return color;
+// const getBorderColor = (name) => {
+//   const colorName = "dark";
+//   let color = getCssVar(`${colorName}`);
+//   console.log(colorName + '=' +  color);
+//   return color;
 
-}
+// }
 
     const colors = [
       'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 'deep-orange', 'brown', 'grey', 'blue-grey'
     ]
+    /**
+     * Calculates the avatar color based on the name.
+     *
+     * @param {string} name - The name used to calculate the avatar color.
+     * @return {string} The calculated avatar color.
+     */
     const getAvatarColor = (name) => {
 
       const hash = [...name].reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
@@ -169,20 +179,31 @@ const getBorderColor = (name) => {
 
 
 
-const filteredContacts = computed(() => {
-  if (!state.searchTerm) {
-    return state.rows;
-  }
-  return state.rows.filter(contact =>
-    contact.name.toLowerCase().includes(state.searchTerm.toLowerCase())
-  );
-});
+// const filteredContacts = computed(() => {
+//   if (!state.searchTerm) {
+//     return state.rows;
+//   }
+//   return state.rows.filter(contact =>
+//     contact.name.toLowerCase().includes(state.searchTerm.toLowerCase())
+//   );
+// });
 
 
+    /**
+     * Sets the selected contact value to the given contact
+     * and sets the dialogVisible value to true.
+     *
+     * @param {Object} contact - The contact object to show in the card.
+     */
     const showContactCard = (contact) => {
       selectedContact.value = contact;
       dialogVisible.value = true;
     }
+    /**
+     * Creates a new contact by sending a POST request to the specified URL.
+     *
+     * @return {Promise<void>} - A promise that resolves when the contact is successfully created.
+     */
     const newContact = async () => {
       try {
         const options = {
@@ -232,6 +253,11 @@ const filteredContacts = computed(() => {
         });
       }
     };
+    /**
+     * Clears the new contact form by resetting all the form fields to empty values.
+     *
+     * @returns {void}
+     */
     const clearNewContactForm = () => {
       state.newname = '';
       state.newstreet = '';

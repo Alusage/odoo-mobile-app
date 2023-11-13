@@ -11,6 +11,16 @@ export const useAuthStore = defineStore({
     isAuthenticated: (state) => !!state.user,
   },
   actions: {
+    /**
+     * Log in to the application using the provided credentials.
+     *
+     * @param {Object} options - The login options.
+     * @param {string} options.db - The database name.
+     * @param {string} options.login - The user login.
+     * @param {string} options.password - The user password.
+     * @return {Promise} A promise that resolves with the logged-in user object
+     * or rejects with an error message.
+     */
     async login({ db, login, password }) {
       try {
         const options = {
@@ -43,6 +53,11 @@ export const useAuthStore = defineStore({
       }
     },
 
+/**
+ * Logout the user.
+ *
+ * @return {void}
+ */
     logout() {
       this.user = null;
     },

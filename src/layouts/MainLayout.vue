@@ -11,7 +11,8 @@
         </q-toolbar-title>
 
         <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer" />
-        <q-btn flat icon="o_account_circle" class="on-left" size='md'><q-menu>
+        <q-btn flat icon="o_account_circle" class="on-left" size='md'>
+          <q-menu>
             <div class="row no-wrap q-pa-md">
               <div class="column items-center">
                 <q-avatar size="72px">
@@ -25,7 +26,8 @@
                 <q-btn color="primary" label="Logout" push size="sm" v-close-popup />
               </div>
             </div>
-          </q-menu></q-btn>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
@@ -90,7 +92,7 @@
         <q-separator></q-separator>
 
 
-       
+
         <q-item-label header>Servers</q-item-label>
         <q-item v-for="(server,id) in state.servers" :key="id">
           <q-item-section>{{ server.x_url }}</q-item-section>
@@ -131,18 +133,35 @@ export default {
 
     const router = useRouter();
     const route = useRoute();
-   const pageTitle = ref(''); // initialize pageTitle as a ref
+   const pageTitle = ref('');
 
    watch(route, (newRoute) => {
-     pageTitle.value = newRoute.name; // update pageTitle with the new route's name
+     pageTitle.value = newRoute.name; 
    });
 
+    /**
+     * Navigates to the specified page.
+     *
+     * @param {String} path - The path of the page to navigate to.
+     * @return {void} Nothing is returned from this function.
+     */
     const navigateToPage = (path) => {
       router.push(path);
     }
+    /**
+     * Check if the given path is the active route.
+     *
+     * @param {string} path - The path to check against the active route.
+     * @return {boolean} - Returns true if the given path is the active route, false otherwise.
+     */
     const isActive = (path) => {
       return route.path === path;
     }
+    /**
+     * Fetches the list of servers from the server.
+     *
+     * @return {Promise<void>} - A Promise that resolves when the server list is fetched.
+     */
     const fetchServerList = async () => {
       try {
         const options = {

@@ -36,6 +36,12 @@ export default defineComponent({
 
 
 
+    /**
+     * Retrieves the count of contacts from the server.
+     *
+     * @param {type} paramName - description of parameter
+     * @return {type} description of return value
+     */
     const countContact = async () => {
 
       try {
@@ -73,6 +79,11 @@ export default defineComponent({
 
     const router = useRouter();
 
+    /**
+     * Navigates to the specified page.
+     *
+     * @param {string} path - The path to navigate to.
+     */
     const navigateToPage = (path) => {
       router.push(path);
     }
