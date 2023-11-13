@@ -280,8 +280,6 @@ export default defineComponent({
       selectedContact,
       showContactCard,
       ContactCard,
-      getBorderColor,
-      filteredContacts
 
 
     }
