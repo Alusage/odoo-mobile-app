@@ -1,19 +1,15 @@
+   import coreRoutes from './coreRoutes'
+   import contactRoutes from './contactRoutes'
+   import taskRoutes from './taskRoutes'
 
-const routes = [
-  {
-    path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
-    ]
-  },
 
-  // Always leave this as last one,
-  // but you can also remove it
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
-]
+   const routes = [
+     ...coreRoutes,
+     ...contactRoutes,
+     ...taskRoutes,
 
-export default routes
+
+
+   ]
+
+   export default routes

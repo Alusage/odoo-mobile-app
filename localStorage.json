@@ -1,0 +1,6 @@
+{
+  "users": [
+    { "database": "tata", "login": "tata", "password": "tata" },
+    { "database": "toto", "login": "toto", "password": "toto" }
+  ]
+}

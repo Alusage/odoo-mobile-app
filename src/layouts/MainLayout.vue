@@ -1,43 +1,107 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr lff">
+
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+        <q-btn flat icon="o_menu" size='md' @click="leftDrawer = !leftDrawer" />
 
         <q-toolbar-title>
-          Quasar App
+
+          {{ pageTitle }}
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn flat icon="o_settings" class="on-left" size='md' @click="toggleSettingsDrawer" />
+        <q-btn flat icon="o_account_circle" class="on-left" size='md'>
+          <q-menu>
+            <div class="row no-wrap q-pa-md">
+              <div class="column items-center">
+                <q-avatar size="72px">
+                  <img src="https://cdn.quasar.dev/img/avatar4.jpg">
+                </q-avatar>
+
+                <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
+                <div class="text-subtitle1  q-mb-xs">app.alusage.fr</div>
+
+                <q-separator vertical inset class="q-mx-lg" />
+                <q-btn color="primary" label="Logout" push size="sm" v-close-popup />
+              </div>
+            </div>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+    <q-drawer v-model="leftDrawer" side="left" show-if-above :mini="miniState" @mouseover="miniState = false"
+      @mouseout="miniState = true" :width="200" :breakpoint="500" bordered>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+
+      <q-scroll-area class="fit">
+        <q-list padding>
+          <q-item clickable v-ripple :active="isActive('/dashboard')" @click="navigateToPage('/dashboard')">
+            <q-item-section avatar>
+              <q-avatar color="primary" text-color="white" icon="o_home" />
+            </q-item-section>
+
+            <q-item-section>
+              Dashboard
+            </q-item-section>
+          </q-item>
+          <q-item clickable v-ripple :active="isActive('/notification')" @click="navigateToPage('/notification')">
+            <q-item-section avatar>
+              <q-avatar color="orange" text-color="white" icon="o_notifications"><q-badge color="red"
+                  floating>12</q-badge></q-avatar>
+
+            </q-item-section>
+
+            <q-item-section>
+              Notifications
+            </q-item-section>
+          </q-item>
+
+          <q-separator />
+
+          <q-item clickable v-ripple :active="isActive('/contact')" @click="navigateToPage('/contact')">
+            <q-item-section avatar>
+              <q-avatar color="purple" text-color="white" icon="o_contact_page" />
+            </q-item-section>
+
+            <q-item-section>
+              Contact
+            </q-item-section>
+          </q-item>
+
+
+
+          <q-item clickable v-ripple :active="isActive('/task')" @click="navigateToPage('/task')">
+            <q-item-section avatar>
+              <q-avatar color="green" text-color="white" icon="o_task_alt" />
+            </q-item-section>
+
+            <q-item-section>
+              Task
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
+    <q-drawer v-model="settingsDrawerOpen" side="right" behavior="mobile" elevated>
+
+      <q-list bordered separator>
+        <q-item-label header>Settings</q-item-label>
+
+        <q-separator></q-separator>
+
+
+
+        <q-item-label header>Servers</q-item-label>
+        <q-item v-for="(server,id) in state.servers" :key="id">
+          <q-item-section>{{ server.x_url }}</q-item-section>
+        </q-item>
+      </q-list>
+
+    </q-drawer>
+
+
 
     <q-page-container>
       <router-view />
@@ -46,71 +110,122 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { ref , onMounted, reactive, watch } from 'vue'
+import { useRoute, useRouter, } from 'vue-router'
+import axios from 'axios'
+import { useQuasar, Dark } from 'quasar'
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+export default {
+  setup() {
+    const state = reactive({
+      Uapikey: 'admin',
+      Udb: 'odoo',
+      UmyId: '2',
+      servers: [],
+      rowsApi: ref([]),
 
-export default defineComponent({
-  name: 'MainLayout',
 
-  components: {
-    EssentialLink
-  },
+    })
+    const $q = useQuasar();
+    const leftDrawer = ref(false)
+    const settingsDrawerOpen = ref(false)
+    const miniState = ref(true)
 
-  setup () {
-    const leftDrawerOpen = ref(false)
+    const router = useRouter();
+    const route = useRoute();
+   const pageTitle = ref('');
 
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+   watch(route, (newRoute) => {
+     pageTitle.value = newRoute.name; 
+   });
+
+    /**
+     * Navigates to the specified page.
+     *
+     * @param {String} path - The path of the page to navigate to.
+     * @return {void} Nothing is returned from this function.
+     */
+    const navigateToPage = (path) => {
+      router.push(path);
     }
-  }
-})
+    /**
+     * Check if the given path is the active route.
+     *
+     * @param {string} path - The path to check against the active route.
+     * @return {boolean} - Returns true if the given path is the active route, false otherwise.
+     */
+    const isActive = (path) => {
+      return route.path === path;
+    }
+    /**
+     * Fetches the list of servers from the server.
+     *
+     * @return {Promise<void>} - A Promise that resolves when the server list is fetched.
+     */
+    const fetchServerList = async () => {
+      try {
+        const options = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.Udb,
+                state.UmyId,
+                state.Uapikey,
+                'x_server_login',
+                'search_read',
+                [[["x_local_user_id", "=", Number(state.UmyId)]]],
+
+
+
+              ]
+            }
+          }
+        };
+        const responseServer = await axios.request(options);
+        state.servers = responseServer.data.result;
+
+        console.log(state.servers)
+      } catch (error) {
+        console.error(error);
+      }
+
+    }
+
+    onMounted(() => {
+      fetchServerList()
+
+    })
+    return {
+      state,
+      leftDrawer,
+      settingsDrawerOpen,
+      miniState,
+      navigateToPage,
+      isActive,
+      fetchServerList,
+      pageTitle,
+
+
+
+
+      toggleSettingsDrawer() {
+        settingsDrawerOpen.value = !settingsDrawerOpen.value
+      },
+
+
+
+    }
+
+
+
+  },
+}
 </script>
