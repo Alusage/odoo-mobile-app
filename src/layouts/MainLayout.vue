@@ -10,11 +10,14 @@
           {{ pageTitle }}
         </q-toolbar-title>
 
-        <q-toggle 
-        checked-icon="dark_mode" 
-        unchecked-icon="light_mode" 
-        v-model="darkModeToggle" 
-        color="dark"></q-toggle>
+        <q-btn
+        flat 
+        round
+        @click="$q.dark.toggle()"
+        :icon="$q.dark.isActive ? 'o_nights_stay' : 'o_wb_sunny'"
+        >
+
+        </q-btn>
 
         <q-btn flat icon="o_account_circle" class="on-left" size='md'>
           <q-menu>
