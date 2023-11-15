@@ -5,7 +5,7 @@
       <q-toolbar>
         <q-btn flat icon="o_menu" size='md' @click="leftDrawer = !leftDrawer" />
 
-        <q-toolbar-title>
+        <q-toolbar-title class="large-screen-only">
 
           {{ pageTitle }}
         </q-toolbar-title>
@@ -50,7 +50,7 @@
         <q-list padding>
           <q-item clickable v-ripple :active="isRouteActive('/dashboard')" @click="navigateToPage('/dashboard')">
             <q-item-section avatar>
-              <q-avatar color="primary" text-color="white" icon="o_home" />
+              <q-avatar color="deep-purple" text-color="white" icon="o_home" />
             </q-item-section>
 
             <q-item-section>
@@ -59,7 +59,7 @@
           </q-item>
           <q-item clickable v-ripple :active="isRouteActive('/notification')" @click="navigateToPage('/notification')">
             <q-item-section avatar>
-              <q-avatar color="orange" text-color="white" icon="o_notifications"><q-badge color="red"
+              <q-avatar color="deep-purple" text-color="white" icon="o_notifications"><q-badge color="red"
                   floating>12</q-badge></q-avatar>
 
             </q-item-section>
@@ -73,7 +73,7 @@
 
           <q-item clickable v-ripple :active="isRouteActive('/contact')" @click="navigateToPage('/contact')">
             <q-item-section avatar>
-              <q-avatar color="purple" text-color="white" icon="o_contact_page" />
+              <q-avatar color="deep-purple" text-color="white" icon="o_contact_page" />
             </q-item-section>
 
             <q-item-section>
@@ -85,7 +85,7 @@
 
           <q-item clickable v-ripple :active="isRouteActive('/task')" @click="navigateToPage('/task')">
             <q-item-section avatar>
-              <q-avatar color="green" text-color="white" icon="o_task_alt" />
+              <q-avatar color="deep-purple" text-color="white" icon="o_task_alt" />
             </q-item-section>
 
             <q-item-section>
@@ -222,9 +222,14 @@ export default {
 
 <style lang="scss">
 
-.q-header {
+.q-toolbar {
   background-color: $color-primary-light ;
-  color: $color-on-primary-light
+  color: $color-on-primary-light ; 
+}
+
+.q-avatar {
+  background-color: $color-primary-light ;
+  color: $color-on-primary-light ; 
 }
 
 </style>
