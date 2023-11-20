@@ -5,6 +5,9 @@
       <q-toolbar>
         <q-btn flat icon="o_menu" size='md' @click="leftDrawer = !leftDrawer" />
 
+        <SearchBar>
+        </SearchBar>
+
         <q-toolbar-title class="large-screen-only">
 
           {{ pageTitle }}
@@ -129,10 +132,14 @@ import { ref , onMounted, reactive, watch } from 'vue'
 import { useRoute, useRouter, } from 'vue-router'
 import axios from 'axios'
 import { useQuasar } from 'quasar'
+import SearchBar from '../components/SearchBar.vue'
 
 
 export default {
   name: 'MainLayout',
+  components: {
+    SearchBar,
+  },
   setup() {
     const state = reactive({
       Uapikey: 'admin',
