@@ -2,13 +2,11 @@
   <q-page>
     <div>
       <q-toolbar > 
-        <q-input 
+        <!-- <q-input 
           outlined 
           v-model="state.searchTerm" 
           label="Search contacts" 
-          @input="updateFilteredContacts"
-          @keypress.enter="fetchContactList"
-        />
+        /> -->
       </q-toolbar>
       
       
@@ -27,7 +25,7 @@
           v-for="(contact, id) in state.rows"
           :key="id"
           transition="jump-right"
-          style="height: 56px;">
+          style="height: 3.5rem;">
 
           <q-item clickable v-ripple  @click="showContactCard(contact)">
 
@@ -113,7 +111,7 @@ import { defineComponent, reactive, onMounted, ref, computed } from "vue";
 import { Notify, getCssVar } from 'quasar'
 // import ContactPreview from '../../components/ContactPreview.vue';
 import ContactCard from '../../components/ContactCard.vue';
-
+import { watch } from 'vue';
 
 
 export default defineComponent({
@@ -127,6 +125,7 @@ export default defineComponent({
 
 
   setup() {
+    console.log('Setup function called!');
     const state = reactive({
       apikey: 'admin',
       db: 'odoo',
@@ -140,88 +139,88 @@ export default defineComponent({
     const virtualScrollRef = ref(null); 
     const isContactListFetched = ref(false); // Define isContactListFetched as a ref
 
-    // const fetchContactList = async () => {
-    //   try {
-    //     const options = {
-    //       method: 'POST',
-    //       url: 'https://apps.alusage.fr/jsonrpc',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       data: {
-    //         jsonrpc: '2.0',
-    //         params: {
-    //           service: 'object',
-    //           method: 'execute_kw',
-    //           args: [
-    //             state.db,
-    //             state.myId,
-    //             state.apikey,
-    //             'res.partner',
-    //             'search_read',
-    //             [[]],
-    //             {
-    //               fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city','write_date','function'],
-    //             }
-    //           ]
-    //         }
-    //       }
-    //     };
-
-
-    //     const response = await axios.request(options);
-    //     state.rows = response.data.result;
-
-    //     console.log(state.rows)
-    //     console.log(state.rows[10].name)
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-
-    // }
-    const fetchContactList = async () => { // Function to fetch the contact list from the Odoo backend
+    const fetchContactList = async () => {
       try {
-        if (state.searchTerm.trim() !== '') {  // Check if the search term is not empty
-          const options = {
-            method: 'POST',
-            url: 'https://apps.alusage.fr/jsonrpc',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            data: {
-              jsonrpc: '2.0',
-              params: {
-                service: 'object',
-                method: 'execute_kw',
-                args: [
-                  state.db,
-                  state.myId,
-                  state.apikey,
-                  'res.partner',
-                  'search_read',
-                  [['|', [ 'name', 'ilike', state.searchTerm ], ['email', 'ilike', state.searchTerm]]], 
-                  {
-                    fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
-                  }
-                ]
-              }
+        const options = {
+          method: 'POST',
+          url: 'https://apps.alusage.fr/jsonrpc',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: {
+            jsonrpc: '2.0',
+            params: {
+              service: 'object',
+              method: 'execute_kw',
+              args: [
+                state.db,
+                state.myId,
+                state.apikey,
+                'res.partner',
+                'search_read',
+                [[]],
+                {
+                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city','write_date','function'],
+                }
+              ]
             }
-          };
-
-          const response = await axios.request(options);  // Make an asynchronous request using Axios
-
-          if(state.rows.length > 0){  // Show the contact card if there is at least one contact in the list
-            showContactCard(state.rows[0]) ; 
           }
+        };
 
-          state.rows = response.data.result; // Update the rows with the fetched data
 
-          isContactListFetched.value = true; // Set isContactListFetched to true
-        }
+        const response = await axios.request(options);
+        state.rows = response.data.result;
+        isContactListFetched.value = true;
+
+        console.log(state.rows)
+        console.log(state.rows[10].name)
       } catch (error) {
-        console.error(error); // Log any errors that occur during the fetch
+        console.error(error);
       }
-    };
+
+    }
+    //   try {
+    //     if (state.searchTerm.trim() !== '') {  // Check if the search term is not empty
+    //       const options = {
+    //         method: 'POST',
+    //         url: 'https://apps.alusage.fr/jsonrpc',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         data: {
+    //           jsonrpc: '2.0',
+    //           params: {
+    //             service: 'object',
+    //             method: 'execute_kw',
+    //             args: [
+    //               state.db,
+    //               state.myId,
+    //               state.apikey,
+    //               'res.partner',
+    //               'search_read',
+    //               [['|', [ 'name', 'ilike', state.searchTerm ], ['email', 'ilike', state.searchTerm]]], 
+    //               {
+    //                 fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
+    //               }
+    //             ]
+    //           }
+    //         }
+    //       };
+
+    //       const response = await axios.request(options);  // Make an asynchronous request using Axios
+
+    //       if(state.rows.length > 0){  // Show the contact card if there is at least one contact in the list
+    //         showContactCard(state.rows[0]) ; 
+    //       }
+
+    //       state.rows = response.data.result; // Update the rows with the fetched data
+
+    //       isContactListFetched.value = true; // Set isContactListFetched to true
+    //     }
+    //   } catch (error) {
+    //     console.error(error); // Log any errors that occur during the fetch
+    //   }
+    // };
     onMounted(() => {  // Fetch the contact list when the component is mounted
       fetchContactList();
     })
@@ -253,11 +252,10 @@ export default defineComponent({
 
 
 
-    // Define a computed property for filteredContacts based on the search term
     const filteredContacts = computed(() => {
-      // Check if the search term is empty, if so, return an empty array
+      // Check if the search term is empty
       if (!state.searchTerm.trim()) {
-        return [];
+        return state.rows;
       }
 
       // Convert the search term to lowercase for case-insensitive comparison
@@ -265,12 +263,10 @@ export default defineComponent({
 
       // Use the filter method to create a new array containing only the contacts
       // whose names include the lowercase search term
-      return state.rows.filter(contact =>
+      return state.rows.filter((contact) =>
         contact.name.toLowerCase().includes(searchTermLowerCase)
       );
     });
-
-
 
 
     /**
@@ -373,13 +369,9 @@ export default defineComponent({
      * @param {string} state.searchTerm - The current search term.
      * @return {void} This function does not return anything.
      */
-    const updateFilteredContacts = () => {
-      if (state.searchTerm.trim() !== '') {
-        fetchContactList();
-      }
-    };
+    
 
-   
+
     return {
       state,
       fetchContactList,
@@ -398,7 +390,8 @@ export default defineComponent({
       getBorderColor,
       filteredContacts,
       virtualScrollRef,
-      updateFilteredContacts,
+
+      watch,
 
 
     }
