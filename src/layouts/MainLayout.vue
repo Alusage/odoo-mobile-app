@@ -8,11 +8,6 @@
         <SearchBar>
         </SearchBar>
 
-        <q-toolbar-title class="large-screen-only">
-
-          {{ pageTitle }}
-        </q-toolbar-title>
-
         <q-btn
         flat 
         round

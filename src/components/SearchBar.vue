@@ -1,4 +1,5 @@
 <template>
+  <!-- Search input using Quasar's q-select -->
   <q-select
     ref="search"
     dark dense standout use-input hide-selected clearable
@@ -11,10 +12,12 @@
     @filter="filter"
     style="width: 18.75rem"
   >
+    <!-- Append an icon to the search input -->
     <template v-slot:append>
       <img src="https://cdn.quasar.dev/img/layout-gallery/img-github-search-key-slash.svg">
     </template>
 
+    <!-- Display a spinner when no options are available during filtering -->
     <template v-slot:no-option>
       <q-item>
         <q-item-section>
@@ -25,6 +28,7 @@
       </q-item>
     </template>
 
+    <!-- Customize the display of each option in the dropdown menu -->
     <template v-slot:option="scope">
       <q-item
         v-bind="scope.itemProps"
@@ -45,18 +49,30 @@
 </template>
 
 <script>
-import { defineComponent, ref , watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 
+/**
+ * SearchBar component for handling search functionality.
+ * Uses Quasar's q-select for the search input.
+ */
 export default defineComponent({
   name: 'SearchBar',
+
+  // Setup function for the component
   setup() {
+    // Use search bar logic to manage state and behavior
     const { text, inputLabel, options, filteredOptions, search, filter } = useSearchBarLogic();
+
+    // Use Vue Router to get the current route
     const route = useRoute();
+
+    // Watch for changes in the route and update the input label accordingly
     watchEffect(() => {
-      inputLabel.value = `${route.name || 'Unknown Page'}`;
+      inputLabel.value = "Search in" + " " + `${route.name || 'Unknown Page'}`;
     });
 
+    // Return the properties and methods to be used in the template
     return {
       text,
       inputLabel,
@@ -68,16 +84,29 @@ export default defineComponent({
   },
 });
 
+/**
+ * Custom logic for the search bar.
+ * Manages the state and behavior of the search input.
+ * @returns {Object} - State and methods for external use.
+ */
 function useSearchBarLogic() {
+  // Reactive references for the search bar state
   const text = ref('');
   const inputLabel = ref(`Search in`);
   const options = ref(null);
   const filteredOptions = ref([]);
   const search = ref(null);
 
+  // Example options for the dropdown
   const stringOptions = ['Option 1', 'Option 2', 'Option 3'];
 
+  /**
+   * Function to filter options based on user input.
+   * @param {string} val - User input for filtering options.
+   * @param {Function} update - Function to update the filtered options.
+   */
   function filter(val, update) {
+    // Simulate an asynchronous fetch of options
     if (options.value === null) {
       setTimeout(() => {
         options.value = stringOptions;
@@ -87,6 +116,7 @@ function useSearchBarLogic() {
       return;
     }
 
+    // Handle empty input
     if (val === '') {
       update(() => {
         filteredOptions.value = options.value.map((op) => ({ label: op }));
@@ -94,6 +124,7 @@ function useSearchBarLogic() {
       return;
     }
 
+    // Filter options based on input
     update(() => {
       filteredOptions.value = [
         { label: val, type: 'In this module' },
@@ -106,6 +137,7 @@ function useSearchBarLogic() {
     });
   }
 
+  // Return the state and methods for external use
   return {
     text,
     inputLabel,
