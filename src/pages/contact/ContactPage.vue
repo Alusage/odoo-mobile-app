@@ -199,6 +199,7 @@ export default defineComponent({
       }
 
     }
+
     //   try {
     //     if (state.searchTerm.trim() !== '') {  // Check if the search term is not empty
     //       const options = {
@@ -241,6 +242,7 @@ export default defineComponent({
     //     console.error(error); // Log any errors that occur during the fetch
     //   }
     // };
+    
     onMounted(() => {  // Fetch the contact list when the component is mounted
       fetchContactList();
     })

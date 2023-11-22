@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
@@ -114,7 +114,8 @@ function useSearchBarLogic() {
    * Function to fetch options for the dropdown. 
    * @returns {Object} - Response from the API.
    */
-  async function fetchOptions() {
+  async function fetchOptions(domain) {
+    console.log(domain)
     try {
       const dataOptions = {
         method: 'POST',
@@ -133,7 +134,7 @@ function useSearchBarLogic() {
               'admin',
               'res.partner',
               'search_read',
-              [[]],
+              [domain],
               {
                 fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
               }
@@ -145,12 +146,12 @@ function useSearchBarLogic() {
       options.value = response.data.result;
       isContactListFetched.value = true;
 
-      // filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
+      filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
 
       console.log(filteredOptions.value)
 
       console.log(options.value)
-      console.log(options.value[1].name)
+      
 
     } catch (error) {
       console.error(error);
@@ -158,9 +159,10 @@ function useSearchBarLogic() {
 
   }
 
-  onMounted(() => {
-    fetchOptions();
-  });
+  // onMounted(() => {
+
+  //   // fetchOptions([]);
+  // });
 
   /**
    * Function to filter options based on user input.
@@ -168,35 +170,45 @@ function useSearchBarLogic() {
    * @param {Function} update - Function to update the filtered options.
    */
   function filter(val, update) {
+    console.log("filter is filtering")
     // Simulate an asynchronous fetch of options
-    if (options.value === null || !isContactListFetched.value) {
-      setTimeout(() => {
-        console.warn('Options not yet fetched.');
-        // options.value = stringOptions;
-        search.value.filter('');
-      }, 2000);
-      update();
-      return;
-    }
+    // if (options.value === null || !isContactListFetched.value) {
+    //   setTimeout(() => {
+    //     console.warn('Options not yet fetched.');
+    //     // options.value = stringOptions;
+    //     search.value.filter('');
+    //   }, 2000);
+    //   update();
+    //   return;
+    // }
 
     // Handle empty input
     if (val === '') {
       update(() => {
-        filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
+
+        
+          // fetchOptions([['name', '=', false]]);
+          filteredOptions.value = "{}".json() ; 
+          console.log(filteredOptions.value) ; 
       });
       return;
     }
 
+
+    // Filter options based on user input    
     // Filter options based on input
     update(() => {
-      filteredOptions.value = [
-        { label: val, type: 'In this module' },
-        { label: val, type: 'All app' },
-        { label: val, type: 'In this server' },
-        ...options.value
-          .filter((op) => op.toLowerCase().includes(val.toLowerCase()))
-          .map((op) => ({ label: op })),
-      ];
+      // filteredOptions.value = [
+        console.log("udate is updating ")
+      //   { label: val, type: 'In this module' },
+      //   { label: val, type: 'All app' },
+      //   { label: val, type: 'In this server' },
+      //   ...options.value
+      //     .filter((op) => op.toLowerCase().includes(val.toLowerCase()))
+      //     .map((op) => ({ label: op })),
+      // ];
+      console.log(val) ;
+      fetchOptions(['|', ['name', 'ilike', val], ['email_normalized', 'ilike', val]]);
     });
   }
 
