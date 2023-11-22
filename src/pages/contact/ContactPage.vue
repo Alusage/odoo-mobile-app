@@ -124,6 +124,21 @@ export default defineComponent({
   },
 
 
+  /**
+   * Generates a new contact by making a POST request to the specified URL.
+   *
+   * @param {Object} state - The state object containing various properties.
+   * @param {string} state.db - The name of the database.
+   * @param {string} state.myId - The ID of the user.
+   * @param {string} state.apikey - The API key.
+   * @param {string} state.newname - The name of the new contact.
+   * @param {string} state.newstreet - The street of the new contact.
+   * @param {string} state.newstreet2 - The second street of the new contact.
+   * @param {string} state.newzip - The ZIP code of the new contact.
+   * @param {string} state.newcity - The city of the new contact.
+   * @param {string} state.newphone - The phone number of the new contact.
+   * @return {Promise<void>} - A promise that resolves when the new contact is added successfully.
+   */
   setup() {
     console.log('Setup function called!');
     const state = reactive({
@@ -139,6 +154,11 @@ export default defineComponent({
     const virtualScrollRef = ref(null); 
     const isContactListFetched = ref(false); // Define isContactListFetched as a ref
 
+    /**
+     * Fetches the contact list from the server.
+     *
+     * @return {Promise} A promise that resolves with the contact list.
+     */
     const fetchContactList = async () => {
       try {
         const options = {

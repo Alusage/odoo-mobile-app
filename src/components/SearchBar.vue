@@ -49,8 +49,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, onMounted, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
+import axios from 'axios';
 
 /**
  * SearchBar component for handling search functionality.
@@ -98,7 +99,57 @@ function useSearchBarLogic() {
   const search = ref(null);
 
   // Example options for the dropdown
-  const stringOptions = ['Option 1', 'Option 2', 'Option 3'];
+  // const stringOptions = ['Option 1', 'Option 2', 'Option 3'];
+
+  const isContactListFetched = ref(false);
+
+  /** 
+   * Function to fetch options for the dropdown. 
+   * @returns {Object} - state and methods for external use.
+   */
+  async function fetchOptions() {
+    try {
+      const dataOptions = {
+        method: 'POST',
+        url: 'https://apps.alusage.fr/jsonrpc',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          jsonrpc: '2.0',
+          params: {
+            service: 'object',
+            method: 'execute_kw',
+            args: [
+              'odoo',
+              '2',
+              'admin',
+              'res.partner',
+              'search_read',
+              [[]],
+              {
+                fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
+              }
+            ]
+          }
+        }
+      } ;
+      const response = await axios.request(dataOptions);
+      options.value = response.data.result;
+      isContactListFetched.value = true;
+
+      console.log(options.value)
+      console.log(options.value[10].name)
+
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  onMounted(() => {
+    fetchOptions();
+  });
 
   /**
    * Function to filter options based on user input.
@@ -107,9 +158,10 @@ function useSearchBarLogic() {
    */
   function filter(val, update) {
     // Simulate an asynchronous fetch of options
-    if (options.value === null) {
+    if (options.value === null || !isContactListFetched.value) {
       setTimeout(() => {
-        options.value = stringOptions;
+        console.warn('Options not yet fetched.');
+        // options.value = stringOptions;
         search.value.filter('');
       }, 2000);
       update();
