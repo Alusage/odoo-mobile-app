@@ -42,7 +42,16 @@
 
             <q-item-section>
               {{ contact.name }}
+            
+
+            <q-item-section v-if="contact.is_company" caption>
+              Company
             </q-item-section>
+
+            <q-item-section v-else caption>
+              Individual
+            </q-item-section>
+          </q-item-section>
 
           </q-item>
         </q-intersection>
@@ -180,7 +189,7 @@ export default defineComponent({
                 'search_read',
                 [[]],
                 {
-                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city','write_date','function'],
+                  fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city','write_date','function', 'is_company'],
                 }
               ]
             }
@@ -296,16 +305,13 @@ export default defineComponent({
      *
      * @param {object} contact - The contact object to display.
      */
-    const showContactCard = (contact) => {
-
-      if (!contact) {
+     const showContactCard = (contact) => {
+      if (contact) {
         selectedContact.value = contact;
         dialogVisible.value = true;
-      } else {
-        return ; 
       }
-      
     }
+
 
     /**
      * Generates a new contact by making a POST request to the specified URL.

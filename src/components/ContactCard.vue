@@ -14,13 +14,14 @@
           <q-avatar>
             <img v-if="getBase64Image(contact)" :src="getBase64Image(contact)" alt="contact picture">
             <q-avatar v-else>
-              {{ getInitials(contact.name) }}
+              {{ getInitials(contact.name) }}  
             </q-avatar>
           </q-avatar>
         </q-item-section>
 
         <q-item-section>
           <q-item-label>{{ contact.name || "Name not specified" }}</q-item-label>
+          <q-item-label caption>{{ contact.function || "job not specified" }}</q-item-label>
           <q-item-label caption>
              {{ contact.email || "Email not specified" }}, {{ contact.phone || "Phone not specified" }}
           </q-item-label>
@@ -32,7 +33,7 @@
 
       <q-card-section horizontal>
         <q-card-section>
-          {{ contact.city || "City not specified" }}, {{ contact.zip || "ZIP code not specified" }}, {{ contact.function || "job not specified" }}
+          {{ contact.city || "City not specified" }}, {{ contact.zip || "ZIP code not specified" }}
         </q-card-section>
 
         <q-separator vertical />

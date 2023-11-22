@@ -11,42 +11,49 @@
     :options="filteredOptions"
     option-label="name"
     @filter="filter"
-    style="width: 18.75rem"
+    style="width: 31.25rem"
   >
     <!-- Append an icon to the search input -->
     <template v-slot:append>
+      <!-- GitHub search icon -->
       <img src="https://cdn.quasar.dev/img/layout-gallery/img-github-search-key-slash.svg">
     </template>
 
-    <!-- Display a spinner when no options are available during filtering -->
+    <!-- Display a spinner when no options are available -->
     <template v-slot:no-option>
       <q-item>
         <q-item-section>
           <div class="text-center">
+            <!-- Loading spinner -->
             <q-spinner-pie color="grey-5" size="24px" />
           </div>
         </q-item-section>
       </q-item>
     </template>
 
-    <!-- Customize the display of each option in the dropdown menu -->
+    <!-- Display each option with icon and additional information -->
     <template v-slot:option="scope">
-      
-      <q-item
-        v-bind="scope.itemProps"
-        class="GL__select-GL__menu-link"
-      >
+      <q-item v-bind="scope.itemProps" class="GL__select-GL__menu-link">
         <q-item-section side>
+          <!-- Icon for each option -->
           <q-icon name="collections_bookmark" />
         </q-item-section>
-        
         <q-item-section>
-           {{ scope.opt.label }} {{ scope.opt.id }}
+          <!-- Displaying the label and ID of the option -->
+          {{ scope.opt.label }} {{ scope.opt.id }} 
+          <q-item-section v-if="scope.opt.isCompany">
+            Entreprise
+          </q-item-section>
+          <q-item-section v-else>
+            Particulier
+          </q-item-section>
+          
         </q-item-section>
-
         <q-item-section side :class="{ 'default-type': !scope.opt.type }">
+          <!-- Button for additional action related to the option -->
           <q-btn outline dense no-caps text-color="blue-grey-5" size="12px" class="bg-grey-1 q-px-sm">
             {{ scope.opt.type || 'Jump to' }} 
+            <!-- Arrow icon indicating the action -->
             <q-icon name="subdirectory_arrow_left" size="14px" />
           </q-btn> 
         </q-item-section>
@@ -60,19 +67,10 @@ import { defineComponent, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
-/**
- * SearchBar component for handling search functionality.
- * Uses Quasar's q-select for the search input.
- */
 export default defineComponent({
   name: 'SearchBar',
-
-  // Setup function for the component
   setup() {
-    // Use search bar logic to manage state and behavior
     const { text, inputLabel, options, filteredOptions, search, filter } = useSearchBarLogic();
-
-    // Use Vue Router to get the current route
     const route = useRoute();
 
     // Watch for changes in the route and update the input label accordingly
@@ -80,7 +78,6 @@ export default defineComponent({
       inputLabel.value = "Search in" + " " + `${route.name || 'Unknown Page'}`;
     });
 
-    // Return the properties and methods to be used in the template
     return {
       text,
       inputLabel,
@@ -92,11 +89,6 @@ export default defineComponent({
   },
 });
 
-/**
- * Custom logic for the search bar.
- * Manages the state and behavior of the search input.
- * @returns {Object} - State and methods for external use.
- */
 function useSearchBarLogic() {
   // Reactive references for the search bar state
   const text = ref('');
@@ -104,18 +96,14 @@ function useSearchBarLogic() {
   const options = ref(null);
   const filteredOptions = ref([]);
   const search = ref(null);
-
-  // Example options for the dropdown
-  // const stringOptions = ['Option 1', 'Option 2', 'Option 3'];
-
   const isContactListFetched = ref(false);
 
   /** 
    * Function to fetch options for the dropdown. 
+   * @param {Array} domain - Domain for fetching options.
    * @returns {Object} - Response from the API.
    */
   async function fetchOptions(domain) {
-    console.log(domain)
     try {
       const dataOptions = {
         method: 'POST',
@@ -136,33 +124,24 @@ function useSearchBarLogic() {
               'search_read',
               [domain],
               {
-                fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
+                fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function', 'is_company', 'commercial_company_name'],
               }
             ]
           }
         }
-      } ;
+      };
       const response = await axios.request(dataOptions);
       options.value = response.data.result;
       isContactListFetched.value = true;
-
-      filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
-
-      console.log(filteredOptions.value)
-
-      console.log(options.value)
-      
-
+      filteredOptions.value = options.value.map((op) => ({ 
+        label: op.name, 
+        value: op.id,
+        isCompany: op.is_company,
+      }));
     } catch (error) {
       console.error(error);
     }
-
   }
-
-  // onMounted(() => {
-
-  //   // fetchOptions([]);
-  // });
 
   /**
    * Function to filter options based on user input.
@@ -170,44 +149,16 @@ function useSearchBarLogic() {
    * @param {Function} update - Function to update the filtered options.
    */
   function filter(val, update) {
-    console.log("filter is filtering")
-    // Simulate an asynchronous fetch of options
-    // if (options.value === null || !isContactListFetched.value) {
-    //   setTimeout(() => {
-    //     console.warn('Options not yet fetched.');
-    //     // options.value = stringOptions;
-    //     search.value.filter('');
-    //   }, 2000);
-    //   update();
-    //   return;
-    // }
-
     // Handle empty input
     if (val === '') {
       update(() => {
-
-        
-          // fetchOptions([['name', '=', false]]);
-          filteredOptions.value = "{}".json() ; 
-          console.log(filteredOptions.value) ; 
+        filteredOptions.value = [];
       });
       return;
     }
 
-
-    // Filter options based on user input    
-    // Filter options based on input
+    // Filter options based on user input
     update(() => {
-      // filteredOptions.value = [
-        console.log("udate is updating ")
-      //   { label: val, type: 'In this module' },
-      //   { label: val, type: 'All app' },
-      //   { label: val, type: 'In this server' },
-      //   ...options.value
-      //     .filter((op) => op.toLowerCase().includes(val.toLowerCase()))
-      //     .map((op) => ({ label: op })),
-      // ];
-      console.log(val) ;
       fetchOptions(['|', ['name', 'ilike', val], ['email_normalized', 'ilike', val]]);
     });
   }
