@@ -9,6 +9,7 @@
     :label="inputLabel"
     v-model="text"
     :options="filteredOptions"
+    option-label="name"
     @filter="filter"
     style="width: 18.75rem"
   >
@@ -30,6 +31,7 @@
 
     <!-- Customize the display of each option in the dropdown menu -->
     <template v-slot:option="scope">
+      
       <q-item
         v-bind="scope.itemProps"
         class="GL__select-GL__menu-link"
@@ -37,11 +39,16 @@
         <q-item-section side>
           <q-icon name="collections_bookmark" />
         </q-item-section>
+        
+        <q-item-section>
+           {{ scope.opt.label }} {{ scope.opt.id }}
+        </q-item-section>
+
         <q-item-section side :class="{ 'default-type': !scope.opt.type }">
           <q-btn outline dense no-caps text-color="blue-grey-5" size="12px" class="bg-grey-1 q-px-sm">
-            {{ scope.opt.type || 'Jump to' }}
+            {{ scope.opt.type || 'Jump to' }} 
             <q-icon name="subdirectory_arrow_left" size="14px" />
-          </q-btn>
+          </q-btn> 
         </q-item-section>
       </q-item>
     </template>
@@ -105,7 +112,7 @@ function useSearchBarLogic() {
 
   /** 
    * Function to fetch options for the dropdown. 
-   * @returns {Object} - state and methods for external use.
+   * @returns {Object} - Response from the API.
    */
   async function fetchOptions() {
     try {
@@ -138,8 +145,12 @@ function useSearchBarLogic() {
       options.value = response.data.result;
       isContactListFetched.value = true;
 
+      // filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
+
+      console.log(filteredOptions.value)
+
       console.log(options.value)
-      console.log(options.value[10].name)
+      console.log(options.value[1].name)
 
     } catch (error) {
       console.error(error);
@@ -171,7 +182,7 @@ function useSearchBarLogic() {
     // Handle empty input
     if (val === '') {
       update(() => {
-        filteredOptions.value = options.value.map((op) => ({ label: op }));
+        filteredOptions.value = options.value.map((op) => ({ label: op.name, value: op.id }));
       });
       return;
     }
