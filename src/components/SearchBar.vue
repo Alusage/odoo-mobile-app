@@ -7,7 +7,7 @@
     color="black"
     :stack-label="false"
     :label="inputLabel"
-    v-model="text"
+    v-model="useSearchBarLogic"
     :options="filteredOptions"
     option-label="name"
     @filter="filter"
@@ -32,16 +32,20 @@
     </template>
 
     <!-- Display each option with icon and additional information -->
-    <template v-slot:option="scope">
-      <q-item v-bind="scope.itemProps" class="GL__select-GL__menu-link">
+    <template v-slot:option="contacts">
+      <q-item 
+        v-bind="contacts.itemProps" 
+        class="GL__select-GL__menu-link"
+        @click="console.log(contacts.opt.label)"
+      >
         <q-item-section side>
-          <!-- Icon for each option -->
+           <!-- Icon for each option -->
           <q-icon name="collections_bookmark" />
         </q-item-section>
         <q-item-section>
           <!-- Displaying the label and ID of the option -->
-          {{ scope.opt.label }} {{ scope.opt.id }} 
-          <q-item-section v-if="scope.opt.isCompany">
+          {{ contacts.opt.label }} {{ contacts.opt.id }} 
+          <q-item-section v-if="contacts.opt.isCompany">
             Entreprise
           </q-item-section>
           <q-item-section v-else>
@@ -49,17 +53,21 @@
           </q-item-section>
           
         </q-item-section>
-        <q-item-section side :class="{ 'default-type': !scope.opt.type }">
+        <q-item-section side :class="{ 'default-type': !contacts.opt.type }">
           <!-- Button for additional action related to the option -->
-          <q-btn outline dense no-caps text-color="blue-grey-5" size="12px" class="bg-grey-1 q-px-sm">
-            {{ scope.opt.type || 'Jump to' }} 
+          <q-btn outline dense no-caps text-color="blue-grey-5" size="12px" class="bg-grey-1 q-px-sm"
+          @click.stop="console.log('bouton cliqué')"
+          >
+            {{ contacts.opt.type || 'Jump to' }} 
             <!-- Arrow icon indicating the action -->
-            <q-icon name="subdirectory_arrow_left" size="14px" />
+            <q-icon name="subdirectory_arrow_left" size="0.875rem" />
           </q-btn> 
         </q-item-section>
       </q-item>
     </template>
   </q-select>
+
+
 </template>
 
 <script>
@@ -67,10 +75,13 @@ import { defineComponent, ref, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
+
 export default defineComponent({
+  
   name: 'SearchBar',
+  
   setup() {
-    const { text, inputLabel, options, filteredOptions, search, filter } = useSearchBarLogic();
+    const { text, inputLabel, options, filteredOptions, search,filter } = useSearchBarLogic();
     const route = useRoute();
 
     // Watch for changes in the route and update the input label accordingly
@@ -85,8 +96,10 @@ export default defineComponent({
       filteredOptions,
       search,
       filter,
+      useSearchBarLogic,
     };
   },
+    
 });
 
 function useSearchBarLogic() {
@@ -134,13 +147,15 @@ function useSearchBarLogic() {
       options.value = response.data.result;
       isContactListFetched.value = true;
       filteredOptions.value = options.value.map((op) => ({ 
-        label: op.name, 
+        label: op.name, //Attribution of name property as label for the q-item
         value: op.id,
-        isCompany: op.is_company,
+        isCompany: op.is_company, // attribution of is_company property for the q-item
       }));
     } catch (error) {
       console.error(error);
     }
+
+    
   }
 
   /**

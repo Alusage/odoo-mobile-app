@@ -42,16 +42,13 @@
 
             <q-item-section>
               {{ contact.name }}
-            
-
-            <q-item-section v-if="contact.is_company" caption>
-              Company
+              <q-item-section v-if="contact.is_company" caption>
+                Company
+              </q-item-section>
+              <q-item-section v-else caption>
+                Individual
+              </q-item-section>
             </q-item-section>
-
-            <q-item-section v-else caption>
-              Individual
-            </q-item-section>
-          </q-item-section>
 
           </q-item>
         </q-intersection>
@@ -126,9 +123,10 @@ import { watch } from 'vue';
 export default defineComponent({
 
 
-  name: 'ContactPage',
+  name: 'ContactsPage',
   components: {
-    ContactCard, 
+    ContactCard,
+   
     // ContactPreview,
   },
 

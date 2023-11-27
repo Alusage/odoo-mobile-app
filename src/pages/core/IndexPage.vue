@@ -25,6 +25,7 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from 'src/stores/authStore';
 
 
+
 export default defineComponent({
   name: 'IndexPage',
   setup() {

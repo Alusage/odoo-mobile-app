@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lff">
-
+    
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn flat icon="o_menu" size='md' @click="leftDrawer = !leftDrawer" />
@@ -15,6 +15,10 @@
         :icon="$q.dark.isActive ? 'o_nights_stay' : 'o_wb_sunny'"
         >
 
+        </q-btn>
+
+        <q-btn @click="contactsStore.login">
+          Get Contacts 
         </q-btn>
 
         <q-btn flat icon="o_account_circle" class="on-left" size='md'>
@@ -69,13 +73,13 @@
 
           <q-separator />
 
-          <q-item clickable v-ripple :active="isRouteActive('/contact')" @click="navigateToPage('/contact')">
+          <q-item clickable v-ripple :active="isRouteActive('/contacts')" @click="navigateToPage('/contacts')">
             <q-item-section avatar>
               <q-avatar color="deep-purple" text-color="white" icon="o_contact_page" />
             </q-item-section>
 
             <q-item-section>
-              Contact
+              Contacts
             </q-item-section>
           </q-item>
 
@@ -128,12 +132,25 @@ import { useRoute, useRouter, } from 'vue-router'
 import axios from 'axios'
 import { useQuasar } from 'quasar'
 import SearchBar from '../components/SearchBar.vue'
+import { useContactsStore } from 'src/stores/contactsStore'
 
 
 export default {
   name: 'MainLayout',
   components: {
     SearchBar,
+  },
+  data(){
+    return {
+      isContactSelected: false,
+      selectedContact: null,
+    }
+  },
+  methods: {
+    handleContactSelected(contact){
+      this.selectedContact = contact
+      this.isContactSelected = true
+    }
   },
   setup() {
     const state = reactive({
@@ -142,6 +159,7 @@ export default {
       UmyId: '2',
       servers: [],
       rowsApi: ref([]),
+      contactsList: []
 
 
     }) ; 
@@ -153,7 +171,11 @@ export default {
     const pageTitle = ref('');
 
     const router = useRouter();
-    const route = useRoute();
+    const route = useRoute(); 
+
+    const contactsStore = useContactsStore();
+
+  
 
    watch(route, (newRoute) => {
      pageTitle.value = newRoute.name; // update pageTitle with the new route's name
@@ -217,9 +239,11 @@ export default {
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
-    } ; 
-  },
-} ; 
+      contactsStore,
+    }
+  } 
+}
+
 </script>
 
 <style lang="scss">

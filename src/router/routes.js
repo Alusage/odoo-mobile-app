@@ -1,11 +1,11 @@
    import coreRoutes from './coreRoutes'
-   import contactRoutes from './contactRoutes'
+   import contactsRoutes from './contactsRoutes'
    import taskRoutes from './taskRoutes'
 
 
    const routes = [
      ...coreRoutes,
-     ...contactRoutes,
+     ...contactsRoutes,
      ...taskRoutes,
 
 
