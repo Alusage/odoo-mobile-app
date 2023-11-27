@@ -5,6 +5,7 @@
 <script>
 import { defineComponent } from 'vue' ; 
 import { useQuasar } from 'quasar' ;
+import { pinia } from './stores/pinia' ; 
 
 export default defineComponent({
   name: 'App', 

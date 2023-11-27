@@ -115,17 +115,11 @@
     </q-drawer>
 
      
-      <div>
-        <div>
-          
-          {{ console.log("evan") }}
-          {{   contactsStore.fetchContactsList() }}
-      </div>
-        <h2>Données du LocalStorage :</h2>
-        <pre v-if="contactsStore.contactsList">{{ contactsStore.contactsList }}</pre>
-        <pre v-else> loding or error</pre>
-
-      </div>
+  <div>
+    <h2>Contacts List</h2>
+    <pre v-if="contactsStore.loading">Loading...</pre>
+    <pre v-else>{{ contactsStore.contactsList }}</pre>
+  </div>
 
     <q-footer elevated>
         <q-toolbar>
@@ -192,6 +186,7 @@ export default {
 
     const router = useRouter();
     const route = useRoute(); 
+    // const isContactsListLoaded = ref(false);
 
     
     
@@ -242,11 +237,13 @@ export default {
 
     }
 
-    onMounted(() => {
-      fetchServerList()
-      
+    onMounted(async () => {
+     await  fetchServerList()
+     await  contactsStore.fetchContactsList()
+      // isContactsListLoaded.value = true;
 
     })
+
     return {
       state,
       leftDrawer,
@@ -260,6 +257,7 @@ export default {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
       contactsStore,
+      // isContactsListLoaded,
       
     }
   } 

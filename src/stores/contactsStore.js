@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
+import pinia from "src/boot/pinia";
 import axios from "axios";
 
 export const useContactsStore = defineStore({
     id: "contacts",
+    pinia,
     state: () => ({
         fields: ["name",
         "email",
@@ -19,6 +21,8 @@ export const useContactsStore = defineStore({
         contactLists: [
             
         ],
+        loading: false, // État de chargement pour indiquer si les données sont en cours de chargement
+
     }),
     getters: { // fetch READ 
 
@@ -38,6 +42,8 @@ export const useContactsStore = defineStore({
     actions: { // write
         async fetchContactsList() {
             try {
+                this.loading = true // Définir loading à true au début de la requête
+
             const options = {
                     method: "POST",
                     url: "https://apps.alusage.fr/jsonrpc",
@@ -70,10 +76,10 @@ export const useContactsStore = defineStore({
                     
                     console.log("fetch from contactsStore has been fetched"); 
 
-
+                    // Stocker les données dans le localStorag
                     localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
 
-                    console.log("map contactLists attribution has been done") ; 
+                    console.log("Les contacts sont récupérer depuis le serveur") ; 
 
                     this.loginError = "";
                 } else {
@@ -81,7 +87,9 @@ export const useContactsStore = defineStore({
                 } 
             }catch (error) {
                 console.error(error); // Log the error object
-                this.loginError = "Contacts Wasn't found";
+                this.loginError = "Contacts Wasn't found fetch was'nt done";
+            }finally {
+                this.loading = false; //// Définir loading à false à la fin de la requête
             }
         },
 

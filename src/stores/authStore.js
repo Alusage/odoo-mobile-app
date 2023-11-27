@@ -1,11 +1,13 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { useContactsStore } from "./contactsStore";
 
 export const useAuthStore = defineStore({
   id: "auth",
   state: () => ({
     user: null,
     loginError: "",
+    isLoggedIn: false,
   }),
   getters: {
     isAuthenticated: (state) => !!state.user,
@@ -30,10 +32,16 @@ export const useAuthStore = defineStore({
         };
 
         const response = await axios.request(options);
+        this.isLoggedIn = true;
 
         if (response.data.result) {
           this.user = response.data.result;
           this.loginError = "";
+
+          // Initialize contacts store after a successful login
+          const contactsStore = useContactsStore();
+          await contactsStore.fetchContactsList();
+          
         } else {
           this.loginError = "Invalid login or password";
         }
@@ -45,6 +53,7 @@ export const useAuthStore = defineStore({
 
     logout() {
       this.user = null;
+      this.isLoggedIn = false;
     },
   },
 });

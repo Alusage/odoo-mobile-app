@@ -26,6 +26,7 @@ import { useAuthStore } from 'src/stores/authStore';
 
 
 
+
 export default defineComponent({
   name: 'IndexPage',
   setup() {
@@ -73,8 +74,10 @@ export default defineComponent({
   if (authStore.loginError) {
     loginError.value = authStore.loginError;
   } else {
+       
     router.push('/Dashboard');
-    // fetch depuis auth
+
+    
   }
 };
 
