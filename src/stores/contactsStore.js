@@ -67,7 +67,7 @@ export const useContactsStore = defineStore({
                                 }
                             ],
                         },
-                },
+                    },
                 };
                 const response = await axios.request(options);
 
@@ -79,7 +79,7 @@ export const useContactsStore = defineStore({
                     // Stocker les données dans le localStorag
                     localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
 
-                    console.log("Les contacts sont récupérer depuis le serveur") ; 
+                    console.log("Les contacts sont récupérer depuis le serveur et mis en cache") ; 
 
                     this.loginError = "";
                 } else {
@@ -92,8 +92,5 @@ export const useContactsStore = defineStore({
                 this.loading = false; //// Définir loading à false à la fin de la requête
             }
         },
-
-        
-
     }
 }) ;

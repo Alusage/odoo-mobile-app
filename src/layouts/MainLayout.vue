@@ -1,4 +1,4 @@
-<template>
+"<template>
   <q-layout view="hHh Lpr lff">
     
     <q-header elevated class="bg-primary text-white">
@@ -120,6 +120,11 @@
     <pre v-if="contactsStore.loading">Loading...</pre>
     <pre v-else>{{ contactsStore.contactsList }}</pre>
   </div>
+  <div>
+    <h2>Tasks List</h2>
+    <pre v-if="taskStore.loading">Loading...</pre>
+    <pre v-else>{{ taskStore.tasksList }}</pre>
+  </div>
 
     <q-footer elevated>
         <q-toolbar>
@@ -140,7 +145,8 @@ import { useRoute, useRouter, } from 'vue-router'
 import axios from 'axios'
 import { useQuasar } from 'quasar'
 import SearchBar from '../components/SearchBar.vue'
-import { useContactsStore } from 'src/stores/contactsStore'
+import { useContactsStore } from '../stores/contactsStore'
+import { useTasksStore } from '../stores/tasksStore'
 
 
 export default {
@@ -174,6 +180,7 @@ export default {
 
     }) ; 
     const contactsStore = useContactsStore();
+    const taskStore = useTasksStore();
 
     
     console.log(contactsStore);
@@ -241,6 +248,7 @@ export default {
      await  fetchServerList()
      await  contactsStore.fetchContactsList()
       // isContactsListLoaded.value = true;
+      await taskStore.fetchTasksList()
 
     })
 
@@ -257,6 +265,7 @@ export default {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
       contactsStore,
+      taskStore,
       // isContactsListLoaded,
       
     }
