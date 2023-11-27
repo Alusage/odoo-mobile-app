@@ -74,6 +74,7 @@ export default defineComponent({
     loginError.value = authStore.loginError;
   } else {
     router.push('/Dashboard');
+    // fetch depuis auth
   }
 };
 

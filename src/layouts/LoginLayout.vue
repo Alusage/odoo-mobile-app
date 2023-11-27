@@ -17,3 +17,12 @@
     </q-page-container>
   </q-layout>
 </template>
+
+<style lang="scss">
+
+.q-toolbar {
+  background-color: $color-primary-light ;
+  color: $color-on-primary-light ; 
+}
+
+</style>

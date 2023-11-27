@@ -4,24 +4,39 @@ import axios from "axios";
 export const useContactsStore = defineStore({
     id: "contacts",
     state: () => ({
-        name:'',
-        email:  '',
-        phone: '',
-        mobile: '',
-        image_1920: '',
-        street:  '',
-        street2: '',
-        zip: '',
-        city: '',
-        write_date: '',
-        func: '',
-        is_company: false,
+        fields: ["name",
+        "email",
+        "phone",
+        "mobile",
+        "image_1920",
+        "street",
+        "street2",
+        "zip",
+        "city",
+        "write_date",
+        "function",
+        "is_company",],
+        contactLists: [
+            
+        ],
     }),
-    getters: {
+    getters: { // fetch READ 
 
+        
+
+        // getOneContact
+        
+        // getContactById
+        
+
+        // getContactByName 
+
+        //searchContact 
+
+        // showContactForm
     }, 
-    actions: {
-        async login() {
+    actions: { // write
+        async fetchContactsList() {
             try {
             const options = {
                     method: "POST",
@@ -42,20 +57,7 @@ export const useContactsStore = defineStore({
                                 'search_read',
                                 [[]],
                                 {
-                                    fields: [
-                                        "name",
-                                        "email",
-                                        "phone",
-                                        "mobile",
-                                        "image_1920",
-                                        "street",
-                                        "street2",
-                                        "zip",
-                                        "city",
-                                        "write_date",
-                                        "function",
-                                        "is_company",
-                                    ],
+                                    fields: this.fields,
                                 }
                             ],
                         },
@@ -68,18 +70,6 @@ export const useContactsStore = defineStore({
                     
                     console.log("fetch from contactsStore has been fetched"); 
 
-                    this.name = response.data.result.name || "";
-                    this.email = response.data.result.email || "";
-                    this.phone = response.data.result.phone || "";
-                    this.mobile = response.data.result.mobile || "";
-                    this.image_1920 = response.data.result.image_1920 || "";
-                    this.street = response.data.result.street || "";
-                    this.street2 = response.data.result.street2 || "";
-                    this.zip = response.data.result.zip || "";
-                    this.city = response.data.result.city || "";
-                    this.write_date = response.data.result.write_date || "";
-                    this.func = response.data.result.function || "";
-                    this.is_company = response.data.result.is_company || "";
 
                     localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
 
@@ -94,6 +84,8 @@ export const useContactsStore = defineStore({
                 this.loginError = "Contacts Wasn't found";
             }
         },
+
+        
 
     }
 }) ;

@@ -17,7 +17,7 @@
 
         </q-btn>
 
-        <q-btn @click="contactsStore.login">
+        <q-btn @click="contactsStore.fetchContactsList()">
           Get Contacts 
         </q-btn>
 
@@ -114,6 +114,19 @@
 
     </q-drawer>
 
+     
+      <div>
+        <div>
+          
+          {{ console.log("evan") }}
+          {{   contactsStore.fetchContactsList() }}
+      </div>
+        <h2>Données du LocalStorage :</h2>
+        <pre v-if="contactsStore.contactsList">{{ contactsStore.contactsList }}</pre>
+        <pre v-else> loding or error</pre>
+
+      </div>
+
     <q-footer elevated>
         <q-toolbar>
           
@@ -121,6 +134,7 @@
       </q-footer>
 
     <q-page-container>
+      
       <router-view />
     </q-page-container>
   </q-layout>
@@ -150,7 +164,9 @@ export default {
     handleContactSelected(contact){
       this.selectedContact = contact
       this.isContactSelected = true
-    }
+    },
+
+   
   },
   setup() {
     const state = reactive({
@@ -163,6 +179,10 @@ export default {
 
 
     }) ; 
+    const contactsStore = useContactsStore();
+
+    
+    console.log(contactsStore);
 
     const $q = useQuasar();
     const leftDrawer = ref(false)
@@ -173,9 +193,8 @@ export default {
     const router = useRouter();
     const route = useRoute(); 
 
-    const contactsStore = useContactsStore();
-
-  
+    
+    
 
    watch(route, (newRoute) => {
      pageTitle.value = newRoute.name; // update pageTitle with the new route's name
@@ -225,6 +244,7 @@ export default {
 
     onMounted(() => {
       fetchServerList()
+      
 
     })
     return {
@@ -240,6 +260,7 @@ export default {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
       contactsStore,
+      
     }
   } 
 }
