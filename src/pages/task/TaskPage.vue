@@ -1,22 +1,20 @@
 <template>
   <q-page padding>
+   
     <div>
-      <h2>Data Status</h2>
-      <div v-if="dataRetrievalStatus === 'success'">
-        Data retrieved successfully!
-      </div>
-      <div v-else-if="dataRetrievalStatus === 'loading'">
-        Loading data...
-      </div>
-      <div v-else>
-        Data retrieval failed. Please check local storage.
-      </div>
+      <h2>Tasks List </h2>
+    <pre>
+      <p v-for="task in tasksStore.tasksList" :key="task.id">
+        {{ task.name }}
+        {{ task.description }}
+      </p>
+    </pre>
     </div>
-  </q-page>
+  </q-page>  
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, inject } from 'vue';
 
 export default defineComponent({
   name: 'tasksPage',
@@ -26,22 +24,17 @@ export default defineComponent({
       dataRetrievalStatus: 'loading',
     };
   },
+  setup() {
+    const tasksStore = inject("tasksStore");
+    return {
+      tasksStore,
+    }
+  },
   methods: {
-    retrieveDataFromLocalStorage() {
-      try {
-        const data = localStorage.getItem('tasksList');
-        if (data) {
-          this.storedData = JSON.parse(data);
-          this.dataRetrievalStatus = 'success';
-        }
-      } catch (error) {
-        console.error(error);
-        this.dataRetrievalStatus = 'error';
-      }
-    },
+    
   },
-  onMounted() {
-    retrieveDataFromLocalStorage();
-  },
+  // onMounted() {
+    
+  // },
 });
 </script>

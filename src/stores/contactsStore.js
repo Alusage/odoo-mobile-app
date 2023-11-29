@@ -10,7 +10,7 @@ export const useContactsStore = defineStore({
         "email",
         "phone",
         "mobile",
-        // "image_1920",
+        "image_1920",
         "street",
         "street2",
         "zip",

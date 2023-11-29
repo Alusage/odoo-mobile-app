@@ -221,48 +221,6 @@ export default defineComponent({
       }
     };
 
-    //   try {
-    //     if (state.searchTerm.trim() !== '') {  // Check if the search term is not empty
-    //       const options = {
-    //         method: 'POST',
-    //         url: 'https://apps.alusage.fr/jsonrpc',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         data: {
-    //           jsonrpc: '2.0',
-    //           params: {
-    //             service: 'object',
-    //             method: 'execute_kw',
-    //             args: [
-    //               state.db,
-    //               state.myId,
-    //               state.apikey,
-    //               'res.partner',
-    //               'search_read',
-    //               [['|', [ 'name', 'ilike', state.searchTerm ], ['email', 'ilike', state.searchTerm]]],
-    //               {
-    //                 fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function'],
-    //               }
-    //             ]
-    //           }
-    //         }
-    //       };
-
-    //       const response = await axios.request(options);  // Make an asynchronous request using Axios
-
-    //       if(state.rows.length > 0){  // Show the contact card if there is at least one contact in the list
-    //         showContactCard(state.rows[0]) ;
-    //       }
-
-    //       state.rows = response.data.result; // Update the rows with the fetched data
-
-    //       isContactListFetched.value = true; // Set isContactListFetched to true
-    //     }
-    //   } catch (error) {
-    //     console.error(error); // Log any errors that occur during the fetch
-    //   }
-    // };
 
     onMounted(() => {
       // Fetch the contact list when the component is mounted
@@ -358,7 +316,7 @@ export default defineComponent({
      * @return {Promise<void>} - A promise that resolves when the new contact is added successfully.
      */
     const newContact = async () => {
-      const contactsStore = useContactsStore();
+      // const contactsStore = useContactsStore();
       try {
         const options = {
           method: "POST",

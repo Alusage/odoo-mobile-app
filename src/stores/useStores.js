@@ -1,6 +1,6 @@
 // useStores.js
-import { useContactsStore } from "src/stores/ContactsStore"
-import { useTasksStore } from "src/stores/tasksStore";
+import { useContactsStore } from "src/stores/ContactsStore";
+import { useTasksStore } from "src/stores/TasksStore";
 
 export function useStores() {
   const contactsStore = useContactsStore();

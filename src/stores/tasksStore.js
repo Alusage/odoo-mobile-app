@@ -61,5 +61,12 @@ export const useTasksStore = defineStore({
             this.loading = false;
         }
         },
+
+        ReadTasksFromLocalStorage() {
+            const storedTasks = localStorage.getItem('tasksList');
+            if (storedTasks) {
+                this.tasksList = JSON.parse(storedTasks);
+            }
+        }
     },
 });

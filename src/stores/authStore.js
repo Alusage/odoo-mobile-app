@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { useContactsStore } from "./ContactsStore";
-import { useTasksStore } from "./tasksStore";
+import { useTasksStore } from "./TasksStore";
 
 export const useAuthStore = defineStore({
   id: "auth",
