@@ -5,8 +5,8 @@
       <q-toolbar>
         <q-btn flat icon="o_menu" size='md' @click="leftDrawer = !leftDrawer" />
 
-        <SearchBar>
-        </SearchBar>
+        <!-- <SearchBar>
+        </SearchBar> -->
 
         <q-btn
         flat 
@@ -114,17 +114,87 @@
 
     </q-drawer>
 
-     
-  <div>
+    <!-- <div>
+      <h2>Contacts List</h2>
+      <pre>
+        <p v-for="contact in contactsStore.contactsList" :key="contact.id">
+          {{ contact.name }}
+        </p>
+      </pre>
+    </div> -->
+
+  <!-- <div>
     <h2>Contacts List</h2>
     <pre v-if="contactsStore.loading">Loading...</pre>
-    <pre v-else>{{ contactsStore.contactsList }}</pre>
-  </div>
-  <div>
+    <pre v-else>
+      <div>Total Contacts: {{ contactsStore.totalContacts }}</div>
+      <div>Company Contacts: {{ contactsStore.companyContacts.length }}</div>
+    </pre>
+  </div>-->
+  <!-- <q-div> 
     <h2>Tasks List</h2>
+    <h3>{{ taskStore.tasksList.name }}</h3>
     <pre v-if="taskStore.loading">Loading...</pre>
     <pre v-else>{{ taskStore.tasksList }}</pre>
+  </q-div>-->
+
+     
+  <!-- <div>
+    <h2>Contacts List</h2>
+    <pre>
+      <p v-for="contact in contactsList" :key="contact.id">
+        {{ contact.name }}
+      </p>
+    </pre>
+  </div> -->
+  
+  <!-- 
+  <div>
+    <h2>Tasks List</h2>
+     <pre v-if="tasksStore.loading">Loading...</pre>
+     <pre v-else>{{ tasksStore.tasksList }}</pre>
+  </div>  -->
+
+  
+  <!-- <div>
+    <h2>Contact Details</h2>
+    <div v-if="selectedContact">
+      <p>Name: {{ selectedContact.name }}</p>
+      <p>Email: {{ selectedContact.email }}</p>
+      <p>Phone: {{ selectedContact.phone }}</p>
+      
+    </div>
+    <div v-else>
+      <p>No contact selected</p>
+    </div>
+  </div> -->
+
+  <!-- <div>
+    <h2>Tasks List</h2>
+    <div v-for="(task, index) in tasksList" :key="task.id">
+      <h3>Tâches {{ index + 1 }}</h3>
+      <p>Name: {{ task.name }}</p>
+      <p>Description: {{ task.description }}</p>
+    </div>
   </div>
+
+  
+    <div>
+      <h2>Contacts List</h2>
+      <div v-if="contactsList">
+        <div v-for="(contact, index) in contacts.id" :key="contact.id">
+          <h3>Contact {{ index + 1 }}</h3>
+          <p>Name: {{ contact.name }}</p>
+          <p>Email: {{ contact.email }}</p>
+          <p>Phone: {{ contact.phone }}</p>
+        </div>
+      </div>
+      <div v-else>
+        <p>No contact selected</p>
+      </div>
+      
+    </div> -->
+  
 
     <q-footer elevated>
         <q-toolbar>
@@ -140,34 +210,42 @@
 </template>
 
 <script>
-import { ref , onMounted, reactive, watch } from 'vue'
+// import { useQuasar } from 'quasar'
+import { ref , onMounted, watch, reactive, provide  } from 'vue'
 import { useRoute, useRouter, } from 'vue-router'
 import axios from 'axios'
-import { useQuasar } from 'quasar'
-import SearchBar from '../components/SearchBar.vue'
-import { useContactsStore } from '../stores/contactsStore'
-import { useTasksStore } from '../stores/tasksStore'
+// import { useQuasar } from 'quasar'
+// import SearchBar from '../components/SearchBar.vue'
+import { useContactsStore } from 'src/stores/ContactsStore'
+// import { useTasksStore } from 'src/stores/tasksStore'
+
+// import { useStores } from '../stores/useStores'
 
 
 export default {
   name: 'MainLayout',
-  components: {
-    SearchBar,
-  },
-  data(){
-    return {
-      isContactSelected: false,
-      selectedContact: null,
-    }
-  },
-  methods: {
-    handleContactSelected(contact){
-      this.selectedContact = contact
-      this.isContactSelected = true
-    },
+  // components: {
+  //   SearchBar,
+  // },
+  // data(){
+  //   return {
+  //     isContactSelected: false,
+  //     selectedContact: null,
+  //   }
+  // },
+  // methods: {
+  //   handleContactSelected(contact){
+  //     this.selectedContact = contact
+  //     this.isContactSelected = true
+  //   },
 
    
-  },
+  // },
+  // computed: {
+  //   selectedContact(){
+  //     return this.$store.getter['contacts/getContactById'](0); 
+  //   }
+  // },
   setup() {
     const state = reactive({
       Uapikey: 'admin',
@@ -175,17 +253,53 @@ export default {
       UmyId: '2',
       servers: [],
       rowsApi: ref([]),
-      contactsList: []
+      // contactsList: []
 
 
     }) ; 
-    const contactsStore = useContactsStore();
-    const taskStore = useTasksStore();
+
+    // const $q = useQuasar()
+    // const allData = $q.localStorage.getAll();
+    // const contactsList = allData.contactsList;
+    
+    // console.log(contactsList)
+
+    // const contactsList = localStorage.contactsList
+    
+    // const { contactsList, tasksList } = useStores();
+
+    const contactsStore = useContactsStore() ;
+
+    // const tasksStore = useTasksStore() ; 
+
+    // console.log(contactsStore.contactsList) ; 
+    // console.log(tasksStore.tasksList) ;
+
+    // console.log(contactsStore.fields)
+
+    // console.log("contactsList", contactsList);
+    // console.log("tasksList", tasksList);
+
+    // console.log(isRef(contactsList)); // true if contactsList is a ref
+    // console.log(isRef(tasksList)); // true if tasksList is a ref
+
+    // console.log(isReactive(contactsList)); // true if contactsList is a reactive object
+    // console.log(isReactive(tasksList)); // true if tasksList is a reactive object
+
+    // const storedContacts = localStorage.getItem('contactsList');
+    // if (storedContacts) {
+    //   contactsList.value = JSON.parse(storedContacts);
+    // }
+
+    // const storedTasks = localStorage.getItem('tasksList');
+    // if (storedTasks) {
+    //   tasksList.value = JSON.parse(storedTasks);
+    // }
 
     
-    console.log(contactsStore);
+    
 
-    const $q = useQuasar();
+    // const $q = useQuasar();
     const leftDrawer = ref(false)
     const settingsDrawerOpen = ref(false)
     const miniState = ref(true)
@@ -195,8 +309,24 @@ export default {
     const route = useRoute(); 
     // const isContactsListLoaded = ref(false);
 
+    onMounted(() => {
+
+      contactsStore.ReadContactsFromLocalStorage();
+
+      // const storedContacts = localStorage.getItem('contactsList'); 
+
+      // if (storedContacts) {
+      //   contactsList.value = JSON.parse(storedContacts) ; 
+      // }
+
+      // const storedTasks = localStorage.getItem('tasksList');
+      // if(storedTasks){
+      //   tasksList.value = JSON.parse(storedTasks);
+      //   (storedTasks)
+      // }
+    });
     
-    
+    provide('contactsStore', contactsStore);
 
    watch(route, (newRoute) => {
      pageTitle.value = newRoute.name; // update pageTitle with the new route's name
@@ -246,9 +376,9 @@ export default {
 
     onMounted(async () => {
      await  fetchServerList()
-     await  contactsStore.fetchContactsList()
+    //  await  contactsStore.fetchContactsList()
       // isContactsListLoaded.value = true;
-      await taskStore.fetchTasksList()
+      // await taskStore.fetchTasksList()
 
     })
 
@@ -264,9 +394,12 @@ export default {
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value
       },
+      // contactsList,
+      // tasksList, 
       contactsStore,
-      taskStore,
+      // tasksStore,
       // isContactsListLoaded,
+      // localStorage,
       
     }
   } 

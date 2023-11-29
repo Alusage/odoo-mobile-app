@@ -10,7 +10,7 @@ export const useContactsStore = defineStore({
         "email",
         "phone",
         "mobile",
-        "image_1920",
+        // "image_1920",
         "street",
         "street2",
         "zip",
@@ -18,31 +18,20 @@ export const useContactsStore = defineStore({
         "write_date",
         "function",
         "is_company",],
-        contactLists: [
-            
-        ],
+        contactsList: [],
         loading: false, // État de chargement pour indiquer si les données sont en cours de chargement
 
     }),
-    getters: { // fetch READ 
+    getters: {
+        getContactsById: (state) => (id) => {
+            return state.contactsList.find(contact => contact.id === id)
+        },
 
-        
 
-        // getOneContact
-        
-        // getContactById
-        
-
-        // getContactByName 
-
-        //searchContact 
-
-        // showContactForm
     }, 
     actions: { // write
-        async fetchContactsList() {
+        async fetchContactsList(state) {
             try {
-                this.loading = true // Définir loading à true au début de la requête
 
             const options = {
                     method: "POST",
@@ -72,9 +61,13 @@ export const useContactsStore = defineStore({
                 const response = await axios.request(options);
 
                 if (response.data.result) {
-                    this.contactsList = response.data.result ; 
+                    this.contactsList = response.data.result ;
                     
+                    
+                    console.log("contactsList after fetching:", this.contactsList);
                     console.log("fetch from contactsStore has been fetched"); 
+
+                    
 
                     // Stocker les données dans le localStorag
                     localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
@@ -92,5 +85,12 @@ export const useContactsStore = defineStore({
                 this.loading = false; //// Définir loading à false à la fin de la requête
             }
         },
+
+        ReadContactsFromLocalStorage() {
+            const storedContacts = localStorage.getItem('contactsList');
+            if (storedContacts) {
+                this.contactsList = JSON.parse(storedContacts);
+            }
+        }
     }
 }) ;

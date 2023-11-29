@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useContactsStore } from "./contactsStore";
+import { useContactsStore } from "./ContactsStore";
 import { useTasksStore } from "./tasksStore";
 
 export const useAuthStore = defineStore({
@@ -45,7 +45,6 @@ export const useAuthStore = defineStore({
 
           const tasksStore = useTasksStore();
           await tasksStore.fetchTasksList();
-          
         } else {
           this.loginError = "Invalid login or password";
         }
