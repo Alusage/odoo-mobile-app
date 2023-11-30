@@ -6,7 +6,7 @@ export const useTasksStore = defineStore({
     id: "tasks",
     pinia,
     state: () => ({
-        fields: ['name',  'description'],
+        fields: ['name',  'description', 'date_deadline'],
         tasksList: [],
         loading: false,
     }),

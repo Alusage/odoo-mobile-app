@@ -16,7 +16,9 @@
         >
         </q-btn>
 
-        <q-btn @click="contactsStore.fetchContactsList()"> Get Contacts </q-btn>
+        <q-btn @click="fetchContactsStore"> Get Contacts </q-btn>
+        <q-btn @click="fetchTaskStore"> Get Tasks </q-btn>
+
 
         <q-btn flat icon="o_account_circle" class="on-left" size="md">
           <q-menu>
@@ -35,6 +37,7 @@
                   label="Logout"
                   push
                   size="sm"
+                  @click="redirectToLogin()"
                   v-close-popup
                 />
               </div>
@@ -170,6 +173,7 @@ import axios from "axios";
 // import SearchBar from '../components/SearchBar.vue'
 import { useContactsStore } from "src/stores/ContactsStore";
 import { useTasksStore } from "src/stores/TasksStore";
+import { useAuthStore } from "src/stores/AuthStore";
 
 export default {
   name: "MainLayout",
@@ -206,6 +210,9 @@ export default {
 
     const contactsStore = useContactsStore();
     const tasksStore = useTasksStore();
+    const authStore = useAuthStore();
+
+    console.log(authStore.isLoggedIn)
 
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
@@ -223,6 +230,9 @@ export default {
     provide("contactsStore", contactsStore);
     provide("tasksStore", tasksStore);
 
+    const fetchTaskStore = tasksStore.fetchTasksList;
+    const fetchContactsStore = contactsStore.fetchContactsList;
+
     watch(route, (newRoute) => {
       pageTitle.value = newRoute.name; // update pageTitle with the new route's name
     });
@@ -232,6 +242,12 @@ export default {
     const isRouteActive = (path) => {
       return route.path === path;
     };
+
+    const redirectToLogin = () => {
+      if (authStore.isLoggedIn.valueOf()  == false ) {
+        router.push("/")
+      }
+    }
     const fetchServerList = async () => {
       try {
         const options = {
@@ -267,9 +283,9 @@ export default {
 
     onMounted(async () => {
       await fetchServerList();
-      //  await  contactsStore.fetchContactsList()
+       await contactsStore.fetchContactsList()
       // isContactsListLoaded.value = true;
-      // await taskStore.fetchTasksList()
+      await tasksStore.fetchTasksList()
     });
 
     return {
@@ -287,6 +303,10 @@ export default {
       // contactsList,
       tasksStore,
       contactsStore,
+      fetchTaskStore,
+      fetchContactsStore,
+      authStore,
+      redirectToLogin,
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,

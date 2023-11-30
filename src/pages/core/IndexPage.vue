@@ -22,7 +22,7 @@ import { defineComponent, ref, reactive, computed } from 'vue'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useRouter } from 'vue-router';
-import { useAuthStore } from 'src/stores/authStore';
+import { useAuthStore } from 'src/stores/AuthStore';
 
 
 
@@ -92,3 +92,4 @@ export default defineComponent({
 
 
 </script>
+src/stores/AuthStore

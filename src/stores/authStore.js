@@ -39,7 +39,7 @@ export const useAuthStore = defineStore({
           this.user = response.data.result;
           this.loginError = "";
 
-          // Initialize contacts store after a successful login
+          // Initialize contacts and tasks store after a successful login
           const contactsStore = useContactsStore();
           await contactsStore.fetchContactsList();
 
