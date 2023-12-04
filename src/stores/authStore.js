@@ -65,7 +65,7 @@ export const useAuthStore = defineStore({
           console.log('User logged in:', this.user);
 
         // check if loginInfos aren't already existing before storing it in local storage 
-          const newLoginInfo = { url, db, login, password };
+          const newLoginInfo = { url, db, login, password, isChecked: false };
           if (!this.loginInfos.some(info => JSON.stringify(info) === JSON.stringify(newLoginInfo))) {
             this.loginInfos.push(newLoginInfo);
             localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
