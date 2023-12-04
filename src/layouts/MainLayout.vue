@@ -19,8 +19,10 @@
         <q-btn @click="fetchContactsStore"> Get Contacts </q-btn>
         <q-btn @click="fetchTaskStore"> Get Tasks </q-btn>
 
+        <UserModal/>
 
-        <q-btn flat icon="o_account_circle" class="on-left" size="md">
+
+        <!-- <q-btn flat icon="o_account_circle" class="on-left" size="md">
           <q-menu>
             <div class="row no-wrap q-pa-md">
               <div class="column items-center">
@@ -51,7 +53,7 @@
               </div>
             </div>
           </q-menu>
-        </q-btn>
+        </q-btn> -->
 
         <q-btn
           flat
@@ -180,10 +182,13 @@ import { useTasksStore } from 'src/stores/TasksStore'
 import { useAuthStore } from 'src/stores/AuthStore'
 // import axios from 'axios'
 // import { useQuasar } from 'quasar'
-
+import  UserModal  from 'src/components/UserModal.vue'
 
 export default {
   name: 'MainLayout',
+  components: {
+    UserModal,
+  },
   setup() {
     const state = reactive({
       // Uapikey: "admin",
@@ -220,6 +225,7 @@ export default {
 
     provide("contactsStore", contactsStore);
     provide("tasksStore", tasksStore);
+    provide("authStore", authStore);
 
     const fetchTaskStore = tasksStore.fetchTasksList;
     const fetchContactsStore = contactsStore.fetchContactsList;
@@ -301,6 +307,7 @@ export default {
       authStore,
       redirectToLogin,
       userId,
+      UserModal
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,
