@@ -21,40 +21,6 @@
 
         <UserModal/>
 
-
-        <!-- <q-btn flat icon="o_account_circle" class="on-left" size="md">
-          <q-menu>
-            <div class="row no-wrap q-pa-md">
-              <div class="column items-center">
-                <q-avatar size="72px">
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-                </q-avatar>
-
-                <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
-                <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
-                <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
-
-                <div v-for="(info, index) in authStore.loginInfos" :key="index">
-                  <p>URL: {{ info.url }}</p>
-                  <p>Database: {{ info.db }}</p>
-                  <p>Login: {{ info.login }}</p>
-                  <p>Password: {{ info.password }}</p>
-                </div>
-
-                <q-separator vertical inset class="q-mx-lg" />
-                <q-btn
-                  color="primary"
-                  label="Logout"
-                  push
-                  size="sm"
-                  @click="redirectToLogin()"
-                  v-close-popup
-                />
-              </div>
-            </div>
-          </q-menu>
-        </q-btn> -->
-
         <q-btn
           flat
           icon="o_settings"

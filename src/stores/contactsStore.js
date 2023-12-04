@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import pinia from "src/boot/pinia";
 import axios from "axios";
-// import { useAuthStore } from "./AuthStore";
+import { useAuthStore } from "./AuthStore"
 
 
 export const useContactsStore = defineStore({
@@ -33,59 +33,58 @@ export const useContactsStore = defineStore({
     }, 
     actions: { // write
         async fetchContactsList() {
-            console.log();
+            const authStore = useAuthStore(); 
+            const promises = authStore.loginInfos
+            .filter(info => info.isChecked)
+            .map(info => this.fetchContactsForLoginInfo(info));
+            console.log("promises :", promises);
+            this.contactsList = [];
+            await Promise.all(promises).then((values) => {
+                console.log(values) ;
+            });
+        },
+    
+        async fetchContactsForLoginInfo(info) {
+            console.log("fetchContactsForLoginInfo :", info);
             try {
-
             const options = {
-                    method: "POST",
-                    url: "https://apps.alusage.fr/jsonrpc",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    data: {
-                        jsonrpc: "2.0",
-                        params: {
-                            service: "object",
-                            method: "execute_kw",
-                            args: [
-                                "odoo", // lui faire passer la base de donnée entré au login
-                                "admin",
-                                "admin",
-                                'res.partner',
-                                'search_read',
-                                [[]],
-                                {
-                                    fields: this.fields,
-                                }
-                            ],
-                        },
-                    },
-                };
-                const response = await axios.request(options);
-
-                if (response.data.result) {
-                    this.contactsList = response.data.result ;
-                    
-                    
-                    console.log("contactsList after fetching:", this.contactsList);
-                    console.log("fetch from contactsStore has been fetched"); 
-
-                    
-
-                    // Stocker les données dans le localStorag
-                    localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
-
-                    console.log("Les contacts sont récupérer depuis le serveur et mis en cache") ; 
-
-                    this.loginError = "";
-                } else {
-                    this.loginError = "Contacts Wasn't found";
-                } 
-            }catch (error) {
-                console.error(error); // Log the error object
-                this.loginError = "Contacts Wasn't found fetch was'nt done";
-            }finally {
-                this.loading = false; //// Définir loading à false à la fin de la requête
+                method: "POST",
+                url: info.url,
+                headers: {
+                "Content-Type": "application/json",
+                },
+                data: {
+                jsonrpc: "2.0",
+                params: {
+                    service: "object",
+                    method: "execute_kw",
+                    args: [
+                    info.db, // use the db from the loginInfo
+                    2, // use the login from the loginInfo
+                    info.password, // use the password from the loginInfo
+                    'res.partner',
+                    'search_read',
+                    [[]],
+                    {
+                        fields: this.fields,
+                    }
+                    ],
+                },
+                },
+            };
+            const response = await axios.request(options);
+            if (response.data.result) {
+                this.contactsList = this.contactsList.concat(response.data.result) ;
+                localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
+                console.log("contactsList :", this.contactsList);
+            } else {
+                this.loginError = "Contacts Wasn't found";
+            }
+            } catch (error) {
+            console.error(error);
+            this.loginError = "Contacts Wasn't found fetch was'nt done";
+            } finally {
+            this.loading = false;
             }
         },
 

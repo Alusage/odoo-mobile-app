@@ -13,7 +13,8 @@ export default defineComponent ({
      // Watch loginInfos and update local storage whenever it changes
     watch(() => authStore.loginInfos, () => {
         localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
-    }, { deep: true })  // Use deep watcher to watch changes in object properties
+    }, 
+    { deep: true })  // Use deep watcher to watch changes in object properties
 
     return {
       authStore
@@ -36,7 +37,7 @@ export default defineComponent ({
             <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
 
             <div v-for="(info, index) in authStore.loginInfos" :key="index">
-                <q-checkbox v-model="info.isChecked" label="Remember me" />
+                <q-checkbox v-model="info.isChecked" label=" Active DB" />
                 <div>URL: {{ info.url }}</div>
                 <div>Database: {{ info.db }}</div>
                 <div>Login: {{ info.login }}</div>
