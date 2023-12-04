@@ -78,13 +78,6 @@ export default defineComponent({
 
       }
 
-      await authStore.login({ // mis en state des infos de connection pour les passer à authStore
-        url : state.url,
-        db: state.database,
-        login: state.login,
-        password: state.password
-      });
-
 
       if (authStore.loginError) {
         loginError.value = authStore.loginError;
