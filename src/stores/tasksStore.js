@@ -27,7 +27,7 @@ export const useTasksStore = defineStore({
                 service: "object",
                 method: "execute_kw",
                 args: [
-                    'odoo',
+                    'evan', // lui faire passer la base de donnée entré au login
                     '2',
                     'admin',
                     'project.task',

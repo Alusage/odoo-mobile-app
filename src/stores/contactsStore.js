@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
 import pinia from "src/boot/pinia";
 import axios from "axios";
+import { useAuthStore } from "./AuthStore";
+
 
 export const useContactsStore = defineStore({
     id: "contacts",
@@ -20,7 +22,7 @@ export const useContactsStore = defineStore({
         "is_company",],
         contactsList: [],
         loading: false, // État de chargement pour indiquer si les données sont en cours de chargement
-
+        
     }),
     getters: {
         getContactsById: (state) => (id) => {
@@ -30,12 +32,13 @@ export const useContactsStore = defineStore({
 
     }, 
     actions: { // write
-        async fetchContactsList(state) {
+        async fetchContactsList({url, db, login, password}) {
+            console.log(url, db, login, password);
             try {
 
             const options = {
                     method: "POST",
-                    url: "https://apps.alusage.fr/jsonrpc",
+                    url: url,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -45,9 +48,9 @@ export const useContactsStore = defineStore({
                             service: "object",
                             method: "execute_kw",
                             args: [
-                                'odoo',
-                                '2',
-                                'admin',
+                                db, // lui faire passer la base de donnée entré au login
+                                login,
+                                password,
                                 'res.partner',
                                 'search_read',
                                 [[]],

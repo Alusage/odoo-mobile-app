@@ -30,6 +30,7 @@
 
                 <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
                 <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
+                <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
 
                 <q-separator vertical inset class="q-mx-lg" />
                 <q-btn
@@ -168,7 +169,7 @@
 // import { useQuasar } from 'quasar'
 import { ref, onMounted, watch, reactive, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
+// import axios from "axios";
 // import { useQuasar } from 'quasar'
 // import SearchBar from '../components/SearchBar.vue'
 import { useContactsStore } from "src/stores/ContactsStore";
@@ -200,12 +201,12 @@ export default {
   // },
   setup() {
     const state = reactive({
-      Uapikey: "admin",
-      Udb: "odoo",
-      UmyId: "2",
+      // Uapikey: "admin",
+      // Udb: "odoo",
+      // UmyId: "2",
       servers: [],
       rowsApi: ref([]),
-      // contactsList: []
+      contactsList: []
     });
 
     const contactsStore = useContactsStore();
@@ -213,6 +214,9 @@ export default {
     const authStore = useAuthStore();
 
     console.log(authStore.isLoggedIn)
+
+    const userId = authStore.user 
+    console.log(userId);
 
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
@@ -223,6 +227,8 @@ export default {
     const route = useRoute();
 
     onMounted(() => {
+      authStore.readUserFromLocalStorage();
+      console.log(authStore.user);
       contactsStore.ReadContactsFromLocalStorage();
       tasksStore.ReadTasksFromLocalStorage();
     });
@@ -248,41 +254,43 @@ export default {
         router.push("/")
       }
     }
-    const fetchServerList = async () => {
-      try {
-        const options = {
-          method: "POST",
-          url: "https://apps.alusage.fr/jsonrpc",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: {
-            jsonrpc: "2.0",
-            params: {
-              service: "object",
-              method: "execute_kw",
-              args: [
-                state.Udb,
-                state.UmyId,
-                state.Uapikey,
-                "x_server_login",
-                "search_read",
-                [[["x_local_user_id", "=", Number(state.UmyId)]]],
-              ],
-            },
-          },
-        };
-        const responseServer = await axios.request(options);
-        state.servers = responseServer.data.result;
+    // const fetchServerList = async () => {
+    //   try {
+    //     const options = {
+    //       method: "POST",
+    //       url: "https://apps.alusage.fr/jsonrpc",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       data: {
+    //         jsonrpc: "2.0",
+    //         params: {
+    //           service: "object",
+    //           method: "execute_kw",
+    //           args: [
+    //             state.Udb,
+    //             state.UmyId,
+    //             state.Uapikey,
+    //             "x_server_login",
+    //             "search_read",
+    //             [[["x_local_user_id", "=", Number(state.UmyId)]]],
+    //           ],
+    //         },
+    //       },
+    //     };
+    //     const responseServer = await axios.request(options);
+    //     state.servers = responseServer.data.result;
 
-        console.log(state.servers);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+    //     console.log(responseServer.data.result);
+        
+    //     console.log(state.servers);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
 
     onMounted(async () => {
-      await fetchServerList();
+      // await fetchServerList();
        await contactsStore.fetchContactsList()
       // isContactsListLoaded.value = true;
       await tasksStore.fetchTasksList()
@@ -295,7 +303,7 @@ export default {
       miniState,
       navigateToPage,
       isRouteActive,
-      fetchServerList,
+      // fetchServerList,
       pageTitle,
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value;
@@ -307,6 +315,7 @@ export default {
       fetchContactsStore,
       authStore,
       redirectToLogin,
+      userId,
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,
@@ -326,4 +335,3 @@ export default {
   color: $color-on-primary-light;
 }
 </style>
-src/stores/TasksStore

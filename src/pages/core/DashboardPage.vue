@@ -31,7 +31,7 @@ export default defineComponent({
         db: 'odoo',
         myId: '2',
         countContactResult : 0,
-
+        
 
       })
       
