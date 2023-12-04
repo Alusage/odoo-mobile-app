@@ -30,16 +30,7 @@
 
                 <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
                 <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
-
-                // User Infos 
                 <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
-                // Database Infos
-                <div v-for="(info, index) in authStore.loginInfos" :key="index">
-                  <p>URL: {{ info.url }}</p>
-                  <p>Database: {{ info.db }}</p>
-                  <p>Login: {{ info.login }}</p>
-                  <p>Password: {{ info.password }}</p>
-                </div>
 
                 <q-separator vertical inset class="q-mx-lg" />
                 <q-btn
@@ -224,8 +215,8 @@ export default {
 
     console.log(authStore.isLoggedIn)
 
-    // const userId = authStore.user 
-    
+    const userId = authStore.user 
+    console.log(userId);
 
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
@@ -237,7 +228,6 @@ export default {
 
     onMounted(() => {
       authStore.readUserFromLocalStorage();
-      authStore.readLoginInfosFromLocalStorage();
       console.log(authStore.user);
       contactsStore.ReadContactsFromLocalStorage();
       tasksStore.ReadTasksFromLocalStorage();
@@ -325,7 +315,7 @@ export default {
       fetchContactsStore,
       authStore,
       redirectToLogin,
-      
+      userId,
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,

@@ -58,13 +58,11 @@ export const useAuthStore = defineStore({
           localStorage.setItem('user', JSON.stringify(this.user)); // user infos
           console.log('User logged in:', this.user);
 
+          this.loginInfos.push();
+          console.log('Login infos:', this.loginInfos);
 
-          // check if loginInfos arn't aleardy existing before storing it in local storage 
-          const newLoginInfo = { url, db, login, password };
-          if (!this.loginInfos.some(info => JSON.stringify(info) === JSON.stringify(newLoginInfo))) {
-            this.loginInfos.push(newLoginInfo);
-            localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
-          }
+          localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
+
 
           // Initialize contacts and tasks store after a successful login
 
