@@ -32,6 +32,13 @@
                 <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
                 <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
 
+                <div v-for="(info, index) in authStore.loginInfos" :key="index">
+                  <p>URL: {{ info.url }}</p>
+                  <p>Database: {{ info.db }}</p>
+                  <p>Login: {{ info.login }}</p>
+                  <p>Password: {{ info.password }}</p>
+                </div>
+
                 <q-separator vertical inset class="q-mx-lg" />
                 <q-btn
                   color="primary"
@@ -166,39 +173,17 @@
 </template>
 
 <script>
+import { ref , onMounted, reactive, watch, provide } from 'vue'
+import { useRoute, useRouter, } from 'vue-router'
+import { useContactsStore } from 'src/stores/ContactsStore'
+import { useTasksStore } from 'src/stores/TasksStore'
+import { useAuthStore } from 'src/stores/AuthStore'
+// import axios from 'axios'
 // import { useQuasar } from 'quasar'
-import { ref, onMounted, watch, reactive, provide } from "vue";
-import { useRoute, useRouter } from "vue-router";
-// import axios from "axios";
-// import { useQuasar } from 'quasar'
-// import SearchBar from '../components/SearchBar.vue'
-import { useContactsStore } from "src/stores/ContactsStore";
-import { useTasksStore } from "src/stores/TasksStore";
-import { useAuthStore } from "src/stores/AuthStore";
+
 
 export default {
-  name: "MainLayout",
-  // components: {
-  //   SearchBar,
-  // },
-  // data(){
-  //   return {
-  //     isContactSelected: false,
-  //     selectedContact: null,
-  //   }
-  // },
-  // methods: {
-  //   handleContactSelected(contact){
-  //     this.selectedContact = contact
-  //     this.isContactSelected = true
-  //   },
-
-  // },
-  // computed: {
-  //   selectedContact(){
-  //     return this.$store.getter['contacts/getContactById'](0);
-  //   }
-  // },
+  name: 'MainLayout',
   setup() {
     const state = reactive({
       // Uapikey: "admin",

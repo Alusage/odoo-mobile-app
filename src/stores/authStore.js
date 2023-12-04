@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { useContactsStore } from "./ContactsStore";
-import { useTasksStore } from "./TasksStore";
-import pinia from "src/boot/pinia";
+// import { useContactsStore } from "./ContactsStore";
+// import { useTasksStore } from "./TasksStore";
+// import pinia from "src/boot/pinia";
 
 // toDO : stocke id, base de donnée, url et mdp
 
@@ -29,6 +29,12 @@ export const useAuthStore = defineStore({
  * @return {Promise<void>} - A promise that resolves when the login is successful.
  */
     async login( { url, db, login, password} ) {
+
+      const storedLoginInfos = localStorage.getItem('loginInfos');
+        if (storedLoginInfos) {
+          this.loginInfos = JSON.parse(storedLoginInfos);
+        }
+
       try {
         const options = {
           method: "POST",
@@ -58,13 +64,13 @@ export const useAuthStore = defineStore({
           localStorage.setItem('user', JSON.stringify(this.user)); // user infos
           console.log('User logged in:', this.user);
 
-          this.loginInfos.push();
-          console.log('Login infos:', this.loginInfos);
+        // check if loginInfos aren't already existing before storing it in local storage 
+          const newLoginInfo = { url, db, login, password };
+          if (!this.loginInfos.some(info => JSON.stringify(info) === JSON.stringify(newLoginInfo))) {
+            this.loginInfos.push(newLoginInfo);
+            localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
+          }
 
-          localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
-
-
-          // Initialize contacts and tasks store after a successful login
 
           console.log(url)
           // const contactsStore = useContactsStore();
