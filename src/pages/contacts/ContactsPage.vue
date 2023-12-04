@@ -164,6 +164,7 @@ export default defineComponent({
     const virtualScrollRef = ref(null);
     const isContactListFetched = ref(false); // Define isContactListFetched as a ref
     const contactsStore = inject("contactsStore");
+    const authStore = inject("authStore");
     /**
      * Fetches the contact list from the server.
      *
@@ -221,6 +222,11 @@ export default defineComponent({
       }
     };
 
+
+    watch(() => authStore.loginInfos, () => {
+      contactsStore.fetchContactsList();
+    }, 
+    { deep: true })
 
     onMounted(() => {
       // Fetch the contact list when the component is mounted

@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue';
+import { defineComponent, inject, watch } from 'vue';
 
 export default defineComponent({
   name: 'tasksPage',
@@ -72,6 +72,14 @@ export default defineComponent({
   },
   setup() {
     const tasksStore = inject("tasksStore");
+    const authStore = inject("authStore");
+
+    // Watch loginInfos and update local storage whenever it changes
+    watch(() => authStore.loginInfos, () => {
+      tasksStore.fetchTasksList();
+    }, 
+    { deep: true })  // Use deep watcher to watch changes in object properties
+
     return {
       tasksStore,
     }

@@ -37,11 +37,8 @@ export const useContactsStore = defineStore({
             const promises = authStore.loginInfos
             .filter(info => info.isChecked)
             .map(info => this.fetchContactsForLoginInfo(info));
-            console.log("promises :", promises);
             this.contactsList = [];
-            await Promise.all(promises).then((values) => {
-                console.log(values) ;
-            });
+            await Promise.all(promises);
         },
     
         async fetchContactsForLoginInfo(info) {

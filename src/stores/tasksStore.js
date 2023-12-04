@@ -21,7 +21,6 @@ export const useTasksStore = defineStore({
             this.tasksList = [];
             await Promise.all(promises);
         },
-
         async fetchTasksForLoginInfo(info) {
             try {
                 const options = {

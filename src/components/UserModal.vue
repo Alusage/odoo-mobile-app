@@ -3,18 +3,20 @@ import { defineComponent, inject, onMounted, watch } from 'vue';
 export default defineComponent ({
   setup() {
     const authStore = inject('authStore')
-    
 
 
     onMounted(() => {
       authStore.readLoginInfosFromLocalStorage();
-    })
-
-     // Watch loginInfos and update local storage whenever it changes
+    }),
+    
+    // Watch loginInfos and update local storage whenever it changes
     watch(() => authStore.loginInfos, () => {
-        localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
+    localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
+    
     }, 
     { deep: true })  // Use deep watcher to watch changes in object properties
+
+    
 
     return {
       authStore
