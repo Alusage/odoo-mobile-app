@@ -73,7 +73,7 @@ export const useContactsStore = defineStore({
             const response = await axios.request(options);
             if (response.data.result) {
 
-                // Add a from database proprity to each contact
+                // Add a from database proprity to each contacts
                 const contacts = response.data.result.map(contact => ({ ...contact, FromDatabase: info.db}))
                 this.contactsList = this.contactsList.concat(contacts); 
                 

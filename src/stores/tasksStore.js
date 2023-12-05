@@ -50,7 +50,11 @@ export const useTasksStore = defineStore({
                 } 
                 const response = await axios.request(options);
                 if(response.data.result) {
-                    this.tasksList = this.tasksList.concat(response.data.result) ;
+
+                    // Add a from database proprity to each tasks
+                    const tasks = response.data.result.map(task => ({ ...task, FromDatabase: info.db}))
+                    this.tasksList = this.tasksList.concat(tasks); 
+                    
                     localStorage.setItem("tasksList", JSON.stringify(this.tasksList));
                 } else {
                     this.loginError = "Tasks Wasn't found";
