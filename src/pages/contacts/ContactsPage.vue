@@ -10,13 +10,44 @@
       </q-toolbar>
     </div>
 
-    <div>
+    <div class="q-pa-md" style="max-width: fit-content;">
       <h2>Contacts List </h2>
-      <pre>
-        <p v-for="contact in contactsStore.contactsList" :key="contact.id">
+      <q-list bordered separator>
+        <template v-for="contact in contactsStore.contactsList" :key="contact.id">
+          <q-item class="q-my-md" clickable v-ripple style="max-height: 30px;">
+            <q-item-section avatar>
+              <!-- avatar image -->
+              <q-avatar v-if="getBase64Image(contact)">
+                <img :src="getBase64Image(contact)">
+              </q-avatar>
+              <q-avatar
+                v-else
+                :color="getAvatarColor(contact.name)"
+                text-color="white"
+              >
+                {{ getInitials(contact.name) }}
+              </q-avatar>
+            
+            
+            <q-item-section>
+              {{ contact.name }}
+                <q-item-label caption lines="1"  v-if="contact.is_company" >
+                  Company
+                </q-item-label >
+                <q-item-label caption lines="1" v-else >
+                   Individual 
+                </q-item-label >
+            </q-item-section>
+          </q-item-section>
+          </q-item>
+          <q-separator/>
+        </template>
+      </q-list>
+
+        <!-- <p v-for="contact in contactsStore.contactsList" :key="contact.id">
           {{ contact.name }}
-        </p>
-      </pre>
+        </p> -->
+      
     </div>
 
     <div v-if="isContactListFetched">

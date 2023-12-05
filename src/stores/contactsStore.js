@@ -17,6 +17,7 @@ export const useContactsStore = defineStore({
         "street2",
         "zip",
         "city",
+        "image_1920",
         "write_date",
         "function",
         "is_company",],
@@ -71,7 +72,11 @@ export const useContactsStore = defineStore({
             };
             const response = await axios.request(options);
             if (response.data.result) {
-                this.contactsList = this.contactsList.concat(response.data.result) ;
+
+                // Add a from database proprity to each contact
+                const contacts = response.data.result.map(contact => ({ ...contact, FromDatabase: info.db}))
+                this.contactsList = this.contactsList.concat(contacts); 
+                
                 localStorage.setItem("contactsList", JSON.stringify(this.contactsList));
                 console.log("contactsList :", this.contactsList);
             } else {
