@@ -131,7 +131,11 @@
     </q-drawer>
 
     <q-footer elevated>
-      <q-toolbar> </q-toolbar>
+      <q-toolbar> 
+        <q-toolbar-title>
+          toto
+        </q-toolbar-title>
+      </q-toolbar>
     </q-footer>
 
     <q-page-container>

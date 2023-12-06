@@ -1,55 +1,155 @@
 <template>
   <q-page>
-    <div>
-      <q-toolbar>
-        <!-- <q-input 
-          outlined 
-          v-model="state.searchTerm" 
-          label="Search contacts" 
-        /> -->
-      </q-toolbar>
-    </div>
+    <!-- to do add slider and get full width -->
+    
+    
 
-    <div class="q-pa-md" style="max-width: fit-content;">
-      <h2>Contacts List </h2>
-      <q-list bordered separator>
-        <template v-for="contact in contactsStore.contactsList" :key="contact.id">
-          <q-item class="q-my-md" clickable v-ripple style="max-height: 30px;">
-            <q-item-section avatar>
-              <!-- avatar image -->
-              <q-avatar v-if="getBase64Image(contact)">
+
+    <q-list bordered class="q-mt-md">
+      <q-item-label header>
+        <!-- <q-btn-dropdown></q-btn-dropdown> -->
+         
+         Companies
+      </q-item-label>
+      <q-separator/>
+      <q-item 
+      v-for="contact in contactsStore.getCompanies" :key="contact.id" 
+      class="q-my-sm" 
+      clickable 
+      v-ripple>
+        
+        <q-item-section avatar>
+          <q-avatar  v-if="getBase64Image(contact)">
                 <img :src="getBase64Image(contact)">
               </q-avatar>
               <q-avatar
-                v-else
+                v-else 
+                :color="getAvatarColor(contact.name)"
+                text-color="white"
+              >
+                  
+                {{ getInitials(contact.name) }}
+              </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <!-- <q-item-section side v-if="contact.is_company">
+            <q-icon name="o_business" color="blue"/>
+
+            </q-item-section>
+            <q-item-section side v-else>
+            <q-icon name="person" color="green"/>
+          </q-item-section> -->
+          <q-item-label>
+
+            <q-icon name="o_business" color="blue"/>
+            {{ contact.name }}
+            
+          </q-item-label>
+          <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
+          <q-item-label caption lines="2">{{ contact.phone || "Phone is not provided" }}</q-item-label>
+        </q-item-section>
+          
+        
+        
+      </q-item>
+
+      <q-separator/>
+
+      <q-item-label header>Individual</q-item-label>
+
+      <q-separator/>
+
+      <q-item
+        v-for="contact in contactsStore.getIndividuals"
+        :key="contact.id"
+        class="q-my-sm"
+        clickable
+        v-ripple
+      >
+        <q-item-section avatar>
+          <q-avatar  v-if="getBase64Image(contact)">
+                <img :src="getBase64Image(contact)">
+              </q-avatar>
+              <q-avatar
+                v-else 
                 :color="getAvatarColor(contact.name)"
                 text-color="white"
               >
                 {{ getInitials(contact.name) }}
               </q-avatar>
-            
-            
-            <q-item-section>
-              {{ contact.name }}
-                <q-item-label caption lines="1"  v-if="contact.is_company" >
-                  Company
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>
+            <q-icon name="person" color="green"/>
+            {{ contact.name }}
+          </q-item-label>
+          <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
+          <q-item-label caption lines="2">{{ contact.phone || "Phone is not provided" }}</q-item-label>
+        </q-item-section>
+
+      </q-item>
+    </q-list>
+   
+  
+
+    <!-- <div class="q-pa-md">
+      <h2>Contacts List </h2>
+      <q-list bordered separator>
+     
+        
+        <template v-for="contact in contactsStore.contactsList" :key="contact.id">
+          <q-item class="q-my-md" clickable v-ripple style="max-height: 1.875rem;">
+            <q-item-section avatar>
+              avatar image 
+              <q-avatar  v-if="getBase64Image(contact)">
+                <img :src="getBase64Image(contact)">
+              </q-avatar>
+              <q-avatar
+              
+                v-else
+                :color="getAvatarColor(contact.name)"
+                text-color="white"
+              >
+                {{ getInitials(contact.name) }}
+
+                
+              </q-avatar>
+              <q-item-section class="q-pa-md">
+              {{ contact.name }} 
+              <q-item-section>
+                  {{ contact.email || "pas d'email" }}
+              </q-item-section>
+              
+                <q-item-label caption lines="1"  v-if="contact.is_company">
+                  <q-icon name="o_business" color="blue"/>
+                  Company 
                 </q-item-label >
-                <q-item-label caption lines="1" v-else >
+                <q-item-label caption lines="1"  v-else >
+                  <q-icon name="o_person" color="green"/>
                    Individual 
                 </q-item-label >
+                
+                <q-item-label caption>
+                  (From database :  {{ contact.FromDatabase }})
+                </q-item-label>
+                
             </q-item-section>
+            
           </q-item-section>
           </q-item>
           <q-separator/>
         </template>
-      </q-list>
+      
+      </q-list> -->
 
         <!-- <p v-for="contact in contactsStore.contactsList" :key="contact.id">
           {{ contact.name }}
-        </p> -->
+        </p> 
       
-    </div>
-
+    </div>-->
+<!-- 
     <div v-if="isContactListFetched">
       <q-virtual-scroll
         ref="virtualScrollRef"
@@ -67,8 +167,8 @@
         >
           <q-item clickable v-ripple @click="showContactCard(contact)">
             <q-item-section avatar>
-              <!-- #ToDo : Get the color by the companies name -->
-              <!-- #ToDo : Put a colored ring around the avatar from the companie name  -->
+               #ToDo : Get the color by the companies name 
+              #ToDo : Put a colored ring around the avatar from the companie name  
               <q-avatar v-if="getBase64Image(contact)">
                 <img :src="getBase64Image(contact)" />
               </q-avatar>
@@ -91,7 +191,7 @@
           </q-item>
         </q-intersection>
       </q-virtual-scroll>
-    </div>
+    </div>-->
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
@@ -141,11 +241,28 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <!-- 
+      bar sticky
+        probleme de z-index
+       le laisser en fin de page sinon c'est moche parceque ça passe en dessous de la liste
+    -->
+    <q-page-sticky expand position="top">
+      <q-toolbar 
+        class="bg-primary text-white shadow-2"
+        style="min-height: 0.9375rem;"
+        >
+      <text-overline>
+        Contacts
+    </text-overline>
+    </q-toolbar>
+    </q-page-sticky>
+   
   </q-page>
 
   <q-dialog v-model="dialogVisible">
     <contact-card :contact="selectedContact" />
-  </q-dialog>
+  </q-dialog> 
 </template>
 
 <script>
@@ -253,6 +370,8 @@ export default defineComponent({
       }
     };
 
+   
+    
 
     watch(() => authStore.loginInfos, () => {
       contactsStore.fetchContactsList();
@@ -449,4 +568,4 @@ export default defineComponent({
   },
 });
 </script>
-src/stores/ContactsStore
+

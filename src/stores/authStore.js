@@ -69,6 +69,7 @@ export const useAuthStore = defineStore({
           if (!this.loginInfos.some(info => JSON.stringify(info) === JSON.stringify(newLoginInfo))) {
             this.loginInfos.push(newLoginInfo);
             localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
+            console.log("je suis dedans")
           }
 
 

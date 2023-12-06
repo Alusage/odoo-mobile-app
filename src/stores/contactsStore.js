@@ -17,7 +17,6 @@ export const useContactsStore = defineStore({
         "street2",
         "zip",
         "city",
-        "image_1920",
         "write_date",
         "function",
         "is_company",],
@@ -28,6 +27,14 @@ export const useContactsStore = defineStore({
     getters: {
         getContactsById: (state) => (id) => {
             return state.contactsList.find(contact => contact.id === id)
+        },
+
+        getCompanies: (state) => {
+            return state.contactsList.filter(contact => contact.is_company)
+        },
+
+        getIndividuals: (state) => {
+            return state.contactsList.filter(contact => !contact.is_company)
         },
 
 
