@@ -9,7 +9,7 @@
     <p> {{ contact.email }}</p> -->
 
     <q-card class="my-card" flat bordered rounded>
-      <q-item>
+      <q-item clickable v-ripple>
         <q-item-section avatar>
           <q-avatar>
             <img v-if="getBase64Image(contact)" :src="getBase64Image(contact)" alt="contact picture">

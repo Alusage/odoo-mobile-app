@@ -28,25 +28,35 @@ export default defineComponent ({
 <template>
 <q-btn flat icon="o_account_circle" class="on-left" size="md">
     <q-menu>
-        <div class="row no-wrap q-pa-md">
-            <div class="column items-center">
-            <q-avatar size="72px">
-                <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-            </q-avatar>
-
+      <div class="q-pa-md">
+      
+        <div class="row items-center justify-center q-gutter-md">
+          <q-avatar size="4.5rem">
+              <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+          </q-avatar> 
+          <div class="column">
             <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
             <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
             <div class="text-subtitle1 q-mb-xs">Id : {{ authStore.user }} </div>
+          </div>
 
-            <div v-for="(info, index) in authStore.loginInfos" :key="index">
-                <q-checkbox v-model="info.isChecked" label=" Active DB" />
-                <div>URL: {{ info.url }}</div>
-                <div>Database: {{ info.db }}</div>
-                <div>Login: {{ info.login }}</div>
-                <div>Password: {{ info.password }}</div>
-            </div>
-            </div>
         </div>
+          
+
+        <div>
+            <q-btn color="red" label="Logout" icon="o_exit_to_app" @click="authStore.logout()" />
+
+            <q-btn
+            background-color="red"
+              flat
+              class="q-pa-md"
+              round
+              @click="$q.dark.toggle()"
+              :icon="$q.dark.isActive ? 'o_nights_stay' : 'o_wb_sunny'"
+            >
+            </q-btn>
+        </div>
+    </div>
     </q-menu>
 </q-btn>
 </template>

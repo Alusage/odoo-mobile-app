@@ -1,27 +1,22 @@
 "
 <template>
-  <q-layout view="hHh Lpr lff">
-    <q-header elevated class="bg-primary text-white">
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-grey-3 text-white">
       <q-toolbar>
-        <q-btn flat icon="o_menu" size="md" @click="leftDrawer = !leftDrawer" />
+        
 
         <!-- <SearchBar>
         </SearchBar> -->
 
-        <q-btn
-          flat
-          round
-          @click="$q.dark.toggle()"
-          :icon="$q.dark.isActive ? 'o_nights_stay' : 'o_wb_sunny'"
-        >
-        </q-btn>
+        
 
-        <q-btn @click="fetchContactsStore"> Get Contacts </q-btn>
-        <q-btn @click="fetchTaskStore"> Get Tasks </q-btn>
+        <q-btn flat rounded @click="fetchContactsStore"> Get Contacts </q-btn>
+        <q-btn flat rounded @click="fetchTaskStore"> Get Tasks </q-btn>
 
         <UserModal/>
 
         <q-btn
+        rounded
           flat
           icon="o_settings"
           class="on-left"
@@ -30,21 +25,43 @@
         />
       </q-toolbar>
     </q-header>
-
+    <!-- left drawer -->
     <q-drawer
       v-model="leftDrawer"
       side="left"
       show-if-above
       :mini="miniState"
-      @mouseover="miniState = false"
+      @click="miniState = false"
       @mouseout="miniState = true"
-      :width="200"
+      :width="270"
       :breakpoint="500"
-      bordered
     >
       <q-scroll-area class="fit">
-        <q-list padding>
-          <q-item
+        
+        <q-list padding v-for="(info, index) in authStore.loginInfos" :key="index">
+          
+          <q-item>
+            <q-checkbox checked-icon="dns" unchecked-icon="dns"  v-model="info.isChecked" q-mini-drawer-only>
+            <q-item-label q-mini-drawer-hide>
+               Database : {{ info.db }}
+               
+               <q-item-label lines="2">
+                Login : {{ info.login }}
+               </q-item-label>
+               <q-item-label caption>
+                {{ info.url }}
+               </q-item-label>
+            </q-item-label>
+           
+          </q-checkbox>
+          </q-item>
+          <q-separator/>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+          
+          
+          <!-- <q-item
             clickable
             v-ripple
             :active="isRouteActive('/dashboard')"
@@ -108,10 +125,9 @@
             </q-item-section>
 
             <q-item-section> Task </q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
+          </q-item> -->
+       
+    <!-- right drawer -->
     <q-drawer
       v-model="settingsDrawerOpen"
       side="right"
@@ -133,7 +149,8 @@
     <q-footer elevated>
       <q-toolbar> 
         <q-toolbar-title>
-          toto
+          <q-btn flat icon="o_menu" size="md" @click="leftDrawer = !leftDrawer" />
+          <q-btn falt icon="o_home" size="md" @click="navigateToPage('/dashboard')"/>
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
@@ -192,6 +209,14 @@ export default {
       contactsStore.ReadContactsFromLocalStorage();
       tasksStore.ReadTasksFromLocalStorage();
     });
+
+    // Watch loginInfos and update local storage whenever it changes
+    watch(() => authStore.loginInfos, () => {
+    localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
+    
+    }, 
+    { deep: true })  // Use deep watcher to watch changes in object properties
+
 
     provide("contactsStore", contactsStore);
     provide("tasksStore", tasksStore);
@@ -288,12 +313,12 @@ export default {
 
 <style lang="scss">
 .q-toolbar {
-  background-color: $color-primary-light;
+  background-color: $q-primary;
   color: $color-on-primary-light;
 }
 
 .q-avatar {
-  background-color: $color-primary-light;
+  background-color: $q-primary;
   color: $color-on-primary-light;
 }
 </style>
