@@ -1,66 +1,41 @@
 <template>
-  <q-page padding>
+  <q-page >
    
-    <div class="q-pa-md">
-    <q-card class="my-card  " flat bordered>
-      <q-card-section>
-        <div class="text-h6">Tasks</div>
-        <div class="text-subtitle2">Tasks from server.id </div>
-      </q-card-section>
+    <q-list bordered separator>
+      <q-slide-item  
+      @right="onRight" right-color="green"
+      @left="onLeft" left-color="blue"
+        v-for="task in tasksStore.tasksList"
+        :key="task.id" >
 
-      <q-separator/>
+        <template v-slot:left>
+          <q-btn flat icon="hourglass_top" label="Set Timer, start task"/>
+        </template>
+        <template v-slot:right>
+          <q-btn flat icon="hourglass_bottom" label="Stop Timer, task done"/>
+        </template>
+      <q-item
+        clickable
+        v-ripple
+      >
+        <q-item-section>
+          {{ task.name }}
+          <q-item-label caption>
+            From db : {{ task.FromDatabase }}
+          </q-item-label>
+        </q-item-section>
+      </q-item>
+      </q-slide-item>
+    </q-list>
 
-      <q-markup-table>
-        <thead >
-          <tr>
-            <th class="text-left">Name</th>
-            <th class="text-left">Date Deadline</th>
-            <th class="text-left">Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="task in tasksStore.tasksList" :key="task.id">
-            <td class="text-center">{{ task.name }}</td>
-            <td class="text-center">{{ task.date_deadline }}</td>
-            <td class="text-left">{{ task.description }}</td>
-          </tr>
-        </tbody>
-      </q-markup-table>
-    </q-card>
-  </div>
-
-  <div class="q-pa-md row items-start q-gutter-md">
-      <q-card class="my-card" flat bordered>
-        <q-card-section horizontal>
-          <q-card-section class="q-pt-xs">
-            <div class="text-overline">Overline</div>
-            <div class="text-h5 q-mt-sm q-mb-xs">Title</div>
-            <div class="text-caption text-grey">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </div>
-          </q-card-section>
-
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions>
-          <q-btn flat round icon="event" />
-          <q-btn flat>
-            7:30PM
-          </q-btn>
-          <q-btn flat color="primary">
-            Reserve
-          </q-btn>
-        </q-card-actions>
-    </q-card>
-  </div>
+    <!-- toDo : Add timer vue for task where Is timerSet=true -->
 
   </q-page>  
 </template>
 
 <script>
-import { defineComponent, inject, watch } from 'vue';
+import { useQuasar } from 'quasar';
+import { defineComponent, inject, watch, onBeforeMount } from 'vue';
 
 export default defineComponent({
   name: 'tasksPage',
@@ -71,8 +46,20 @@ export default defineComponent({
     };
   },
   setup() {
+    const $q = useQuasar(); 
     const tasksStore = inject("tasksStore");
     const authStore = inject("authStore");
+
+    let timer
+    function finalize (reset){
+      timer= setTimeout(()=>{
+        reset()
+      }, 3000)
+    }
+
+    onBeforeMount(() => {
+      clearTimeout(timer)
+    });
 
     // Watch loginInfos and update local storage whenever it changes
     watch(() => authStore.loginInfos, () => {
@@ -82,13 +69,18 @@ export default defineComponent({
 
     return {
       tasksStore,
+
+      onLeft ({ reset }) {
+        $q.notify('Timer started, task is in progress')
+        finalize(reset)
+      },
+
+      onRight ({ reset }) {
+        $q.notify('Timer stopped, task is done')
+        finalize(reset)
+      },
     }
   },
-  methods: {
-    
-  },
-  // onMounted() {
-    
-  // },
+ 
 });
 </script>

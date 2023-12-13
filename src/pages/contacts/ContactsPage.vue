@@ -68,10 +68,27 @@
 
       <q-separator />
 
-      <q-item
-        v-for="contact in contactsStore.getIndividuals"
+      <q-slide-item
+      v-for="contact in contactsStore.getIndividuals"
         :key="contact.id"
-        class="q-my-sm"
+        @right="onRight"
+        @left="onLeft"
+      >
+
+      <template v-slot:left>
+        {{ contact.name }}
+
+          <div justify-end>
+            <q-btn flat icon="phone" />
+            <q-btn flat icon="mail" />
+            <q-btn flat icon="link" />
+          </div>
+      </template>
+
+      <template v-slot:right> att stp </template>
+
+      <q-item
+        class="q-m-sm"
         clickable
         v-ripple
       >
@@ -99,6 +116,8 @@
           }}</q-item-label>
         </q-item-section>
       </q-item>
+
+      </q-slide-item>
     </q-list>
 
     <!-- <div class="q-pa-md">
@@ -278,9 +297,9 @@ import {
   ref,
   computed,
   inject,
-onBeforeMount,
+  onBeforeMount,
 } from "vue";
-import { Notify, getCssVar, useQuasar } from "quasar";
+import { Notify, getCssVar } from "quasar";
 // import ContactPreview from '../../components/ContactPreview.vue';
 import ContactCard from "../../components/ContactCard.vue";
 import { watch } from "vue";
@@ -556,9 +575,7 @@ export default defineComponent({
      */
 
     // function and const for sliders
-    const $q = useQuasar();
     let timer
-
     function finalize (reset){
       timer= setTimeout(()=>{
         reset()
@@ -589,6 +606,7 @@ export default defineComponent({
       virtualScrollRef,
       contactsStore,
 
+      // function for slider one for each slide direction
       onLeft ({ reset }) {
         finalize(reset)
       },

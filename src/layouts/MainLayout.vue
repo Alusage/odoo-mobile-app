@@ -21,7 +21,7 @@
           icon="o_settings"
           class="on-left"
           size="md"
-          @click="toggleSettingsDrawer"
+          @click="drawer = !drawer"
         />
       </q-toolbar>
     </q-header>
@@ -30,32 +30,27 @@
       v-model="leftDrawer"
       side="left"
       show-if-above
-      :mini="miniState"
-      @click="miniState = false"
+
+      :mini= "miniState"
+      @mouseover="miniState = false"
       @mouseout="miniState = true"
+      
       :width="270"
       :breakpoint="500"
     >
       <q-scroll-area class="fit">
-        
-        <q-list padding v-for="(info, index) in authStore.loginInfos" :key="index">
-          
-          <q-item>
-            <q-checkbox checked-icon="dns" unchecked-icon="dns"  v-model="info.isChecked" q-mini-drawer-only>
-            <q-item-label q-mini-drawer-hide>
-               Database : {{ info.db }}
-               
-               <q-item-label lines="2">
-                Login : {{ info.login }}
-               </q-item-label>
-               <q-item-label caption>
-                {{ info.url }}
-               </q-item-label>
-            </q-item-label>
-           
-          </q-checkbox>
+        <q-list v-for="(info, index) in authStore.loginInfos" :key="index" padding>
+
+          <q-item clickable v-ripple><!-- icone &|| infos sur base de données visible pendant le ministate-->
+            <q-item-section avatar> 
+              <q-checkbox checked-icon="dns" unchecked-icon="dns" v-model="info.isChecked" :label="info.db"/>
+            </q-item-section>
+
+            <q-item-section> <!-- infos de base de données cachée pendant le mini state du tiroir-->
+              login :  {{ info.login }}
+              url : {{ info.url }}
+            </q-item-section>
           </q-item>
-          <q-separator/>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -198,6 +193,10 @@ export default {
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
     const miniState = ref(true);
+
+    
+
+
     const pageTitle = ref("");
 
     const router = useRouter();
@@ -287,6 +286,7 @@ export default {
       leftDrawer,
       settingsDrawerOpen,
       miniState,
+  
       navigateToPage,
       isRouteActive,
       // fetchServerList,
@@ -312,13 +312,14 @@ export default {
 </script>
 
 <style lang="scss">
-.q-toolbar {
+.q-toolbar{
   background-color: $q-primary;
-  color: $color-on-primary-light;
+  color: white;
 }
 
-.q-avatar {
+.q-avatar{
   background-color: $q-primary;
-  color: $color-on-primary-light;
+  color: white;
 }
+
 </style>
