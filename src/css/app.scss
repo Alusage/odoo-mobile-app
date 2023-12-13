@@ -1,5 +1,6 @@
-@import "quasar.variables"; 
+@import "quasar.variables.scss"; 
 @import "tokens.scss" ; 
+@import "colors.module.scss";
 
 .body.body--dark {
     background: $color-background-dark;
