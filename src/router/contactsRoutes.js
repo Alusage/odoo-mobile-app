@@ -6,7 +6,10 @@ const contactsRoutes = [
       {
         path: "",
         name: "Contacts",
-        component: () => import("src/pages/contacts/ContactsPage.vue")
+        component: () => import("src/pages/contacts/ContactsPage.vue"),
+        meta: {
+          requiresAuth: true,
+        },
       }
     ]
 

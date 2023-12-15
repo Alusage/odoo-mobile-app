@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import { ref } from "vue";
 
 // import { useContactsStore } from "./ContactsStore";
 // import { useTasksStore } from "./TasksStore";
@@ -13,6 +14,7 @@ export const useAuthStore = defineStore({
     user: null,
     loginError: "",
     isLoggedIn: false,
+    logoutEvent: ref(false),
     serverList: [],
     loginInfos: [],
   }),
@@ -91,8 +93,15 @@ export const useAuthStore = defineStore({
     },
 
     logout() {
-      this.user = null;
+
       this.isLoggedIn = false;
+      this.loginInfos = this.loginInfos.map(info => ({ ...info, isChecked: false})); 
+      localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos))
+      this.user = null;
+
+      //Logout event emission for the compoenent to use the redirection
+      this.logoutEvent = !this.logoutEvent
+      
     },
 
     readUserFromLocalStorage() {

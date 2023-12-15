@@ -4,7 +4,7 @@
 
     <q-form class="q-gutter-md flex column" @submit.prevent="submitForm">
 
-      <q-input type="url" v-model="state.url" hint="odoo database url" placeholder="http://www.example.com"  label="Url :" :rules="[(value) => !!value || 'Url is required']"></q-input>
+      <q-input type="url" v-model="state.url" hint="https://apps.alusage.fr/jsonrpc" placeholder="http://www.example.com"  label="Url :" :rules="[(value) => !!value || 'Url is required']"></q-input>
 
       <q-input type="text" v-model="state.database" label="Database :" autofocus
         :rules="[(value) => !!value || 'Database is required']"></q-input>

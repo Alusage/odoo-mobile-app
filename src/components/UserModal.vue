@@ -1,9 +1,10 @@
 <script>
 import { defineComponent, inject, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 export default defineComponent ({
   setup() {
     const authStore = inject('authStore')
-
+    const router = useRouter()
 
     onMounted(() => {
       authStore.readLoginInfosFromLocalStorage();
@@ -14,8 +15,12 @@ export default defineComponent ({
     localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
     
     }, 
-    { deep: true })  // Use deep watcher to watch changes in object properties
+    { deep: true }),  // Use deep watcher to watch changes in object properties
 
+    
+    watch(() => authStore.logoutEvent, () => {
+      router.push({ name: 'Login' })
+    })
     
 
     return {
