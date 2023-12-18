@@ -19,7 +19,7 @@ export const useAuthStore = defineStore({
     loginInfos: [],
   }),
   getters: {
-    isAuthenticated: (state) => !!state.user,
+    isAuthenticated: (state) => !!state.user && state.user.isLoggedIn,
   },
   actions: {
 /**
@@ -56,7 +56,7 @@ export const useAuthStore = defineStore({
         };
 
         const response = await axios.request(options);
-        this.isLoggedIn = true;
+        
 
         if (response.data.result) {
 
@@ -67,8 +67,13 @@ export const useAuthStore = defineStore({
           localStorage.setItem('user', JSON.stringify(this.user)); // user infos
           console.log('User logged in:', this.user);
 
+
+          this.user = { ...this.user, isLogged : true}
+          localStorage.setItem('user', JSON.stringify(this.user))
+
         // check if loginInfos aren't already existing before storing it in local storage 
-          const newLoginInfo = { url, db, login, password, isChecked: false };
+          const newLoginInfo = { url, db, login, password, isChecked: false};
+
           if (!this.loginInfos.some(info => JSON.stringify(info) === JSON.stringify(newLoginInfo))) {
             this.loginInfos.push(newLoginInfo);
             localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos));
@@ -96,7 +101,7 @@ export const useAuthStore = defineStore({
 
       this.isLoggedIn = false;
       this.loginInfos = this.loginInfos.map(info => ({ ...info, isChecked: false})); 
-      localStorage.setItem('loginInfos', JSON.stringify(this.loginInfos))
+      this.user = [] ; 
       this.user = null;
 
       //Logout event emission for the compoenent to use the redirection

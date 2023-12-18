@@ -35,13 +35,13 @@
       @mouseover="miniState = false"
       @mouseout="miniState = true"
       
-      :width="270"
+      :width="300"
       :breakpoint="500"
     >
-      <q-scroll-area class="fit">
+      <q-scroll-area class="fit q-pa-sm">
         <q-list v-for="(info, index) in authStore.loginInfos" :key="index" padding>
 
-          <q-item clickable v-ripple><!-- icone &|| infos sur base de données visible pendant le ministate-->
+          <q-item clickable v-ripple  class="q-pa-lg"><!-- icone &|| infos sur base de données visible pendant le ministate-->
             <q-item-section avatar> 
               <q-checkbox checked-icon="dns" unchecked-icon="dns" v-model="info.isChecked" :label="info.db"/>
             </q-item-section>
@@ -56,71 +56,6 @@
     </q-drawer>
           
           
-          <!-- <q-item
-            clickable
-            v-ripple
-            :active="isRouteActive('/dashboard')"
-            @click="navigateToPage('/dashboard')"
-          >
-            <q-item-section avatar>
-              <q-avatar color="deep-purple" text-color="white" icon="o_home" />
-            </q-item-section>
-
-            <q-item-section> Dashboard </q-item-section>
-          </q-item>
-          <q-item
-            clickable
-            v-ripple
-            :active="isRouteActive('/notification')"
-            @click="navigateToPage('/notification')"
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="deep-purple"
-                text-color="white"
-                icon="o_notifications"
-                ><q-badge color="red" floating>12</q-badge></q-avatar
-              >
-            </q-item-section>
-
-            <q-item-section> Notifications </q-item-section>
-          </q-item>
-
-          <q-separator />
-
-          <q-item
-            clickable
-            v-ripple
-            :active="isRouteActive('/contacts')"
-            @click="navigateToPage('/contacts')"
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="deep-purple"
-                text-color="white"
-                icon="o_contact_page"
-              />
-            </q-item-section>
-
-            <q-item-section> Contacts </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            v-ripple
-            :active="isRouteActive('/task')"
-            @click="navigateToPage('/task')"
-          >
-            <q-item-section avatar>
-              <q-avatar
-                color="deep-purple"
-                text-color="white"
-                icon="o_task_alt"
-              />
-            </q-item-section>
-
-            <q-item-section> Task </q-item-section>
-          </q-item> -->
        
     <!-- right drawer -->
     <q-drawer
@@ -321,5 +256,24 @@ export default {
   background-color: $q-primary;
   color: white;
 }
+
+.q-drawer {
+  color: $q-primary; 
+    .q-item{
+      background-color: $grey-3;
+      border-radius: 0.625rem;
+      .q-checkbox{
+        display: flex;
+        flex-direction: column;
+      }
+    }
+}
+  
+
+  // .q-checkbox__label{
+  //   color: $q-secondary;
+  //   border: red solid ;
+  // }
+
 
 </style>

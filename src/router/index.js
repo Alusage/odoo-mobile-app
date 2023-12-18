@@ -33,6 +33,7 @@ export default route(function (/* { store, ssrContext } */) {
     if(to.matched.some(record => record.meta.requiresAuth)){
       if(!auth.isLoggedIn){
         next({ name: 'Login' })
+        console.log("redirection car déconnecté")
       } else {
         next()
       }
@@ -41,18 +42,7 @@ export default route(function (/* { store, ssrContext } */) {
     }
   })
 
-  // Router.beforeEach((to, from, next) => {
-  //   const authStore = useAuthStore()
 
-  //   if(authStore){
-  //       if(!authStore.isLoggin && to.path !== '/'){
-  //       next('/')
-  //     }else{
-  //       next()
-  //     }
-  //   } else {
-  //     return
-  //   }
 
 
     
