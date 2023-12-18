@@ -21,7 +21,7 @@
 <style lang="scss">
 
 .q-toolbar {
-  background-color: $color-primary-light ;
+  background-color: $q-primary ;
   color: $color-on-primary-light ; 
 }
 

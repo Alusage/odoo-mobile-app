@@ -6,7 +6,10 @@ const contactsRoutes = [
       {
         path: "",
         name: "Task",
-        component: () => import("src/pages/task/TaskPage.vue")
+        component: () => import("src/pages/task/TaskPage.vue"),
+        meta: {
+          requiresAuth: true,
+        },
       }
     ]
 

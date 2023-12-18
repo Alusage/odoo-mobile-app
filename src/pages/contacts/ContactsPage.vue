@@ -1,24 +1,181 @@
 <template>
   <q-page>
-    <div>
-      <q-toolbar>
-        <!-- <q-input 
-          outlined 
-          v-model="state.searchTerm" 
-          label="Search contacts" 
-        /> -->
-      </q-toolbar>
-    </div>
+    <!-- to do add slider and get full width -->
 
-    <div>
-      <h2>Contacts List </h2>
-      <pre>
-        <p v-for="contact in contactsStore.contactsList" :key="contact.id">
+    <q-list bordered class="q-mt-md">
+      <q-item-label header>
+        <!-- <q-btn-dropdown></q-btn-dropdown> -->
+        Companies
+      </q-item-label>
+      <q-separator />
+
+      <q-slide-item
+        @right="onRight"
+        @left="onLeft"
+        v-for="contact in contactsStore.getCompanies"
+        :key="contact.id"
+      >
+        <template v-slot:left>
           {{ contact.name }}
-        </p>
-      </pre>
-    </div>
 
+          <div justify-end>
+            <q-btn flat icon="phone" />
+            <q-btn flat icon="mail" />
+            <q-btn flat icon="link" />
+          </div>
+        </template>
+
+        <template v-slot:right> att stp </template>
+
+        <q-item class="q-m-sm" clickable v-ripple>
+          <q-item-section avatar>
+            <q-avatar v-if="getBase64Image(contact)">
+              <img :src="getBase64Image(contact)" draggable="false" />
+            </q-avatar>
+            <q-avatar
+              v-else
+              :color="getAvatarColor(contact.name)"
+              text-color="white"
+              draggable="false"
+            >
+              {{ getInitials(contact.name) }}
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <!-- <q-item-section side v-if="contact.is_company">
+            <q-icon name="o_business" color="blue"/>
+
+            </q-item-section>
+            <q-item-section side v-else>
+            <q-icon name="person" color="green"/>
+          </q-item-section> -->
+            <q-item-label>
+              <q-icon name="o_business" color="blue" />
+              {{ contact.name }}
+            </q-item-label>
+            <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
+            <q-item-label caption lines="2">{{
+              contact.phone || "Phone is not provided"
+            }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-slide-item>
+
+      <q-separator />
+
+      <q-item-label header>Individual</q-item-label>
+
+      <q-separator />
+
+      <q-slide-item
+      v-for="contact in contactsStore.getIndividuals"
+        :key="contact.id"
+        @right="onRight"
+        @left="onLeft"
+      >
+
+      <template v-slot:left>
+        {{ contact.name }}
+
+          <div justify-end>
+            <q-btn flat icon="phone" />
+            <q-btn flat icon="mail" />
+            <q-btn flat icon="link" />
+          </div>
+      </template>
+
+      <template v-slot:right> att stp </template>
+
+      <q-item
+        class="q-m-sm"
+        clickable
+        v-ripple
+      >
+        <q-item-section avatar>
+          <q-avatar v-if="getBase64Image(contact)">
+            <img :src="getBase64Image(contact)" />
+          </q-avatar>
+          <q-avatar
+            v-else
+            :color="getAvatarColor(contact.name)"
+            text-color="white"
+          >
+            {{ getInitials(contact.name) }}
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <q-item-label>
+            <q-icon name="person" color="green" />
+            {{ contact.name }}
+          </q-item-label>
+          <q-item-label caption lines="1">{{ contact.email }}</q-item-label>
+          <q-item-label caption lines="2">{{
+            contact.phone || "Phone is not provided"
+          }}</q-item-label>
+        </q-item-section>
+      </q-item>
+
+      </q-slide-item>
+    </q-list>
+
+    <!-- <div class="q-pa-md">
+      <h2>Contacts List </h2>
+      <q-list bordered separator>
+     
+        
+        <template v-for="contact in contactsStore.contactsList" :key="contact.id">
+          <q-item class="q-my-md" clickable v-ripple style="max-height: 1.875rem;">
+            <q-item-section avatar>
+              avatar image 
+              <q-avatar  v-if="getBase64Image(contact)">
+                <img :src="getBase64Image(contact)">
+              </q-avatar>
+              <q-avatar
+              
+                v-else
+                :color="getAvatarColor(contact.name)"
+                text-color="white"
+              >
+                {{ getInitials(contact.name) }}
+
+                
+              </q-avatar>
+              <q-item-section class="q-pa-md">
+              {{ contact.name }} 
+              <q-item-section>
+                  {{ contact.email || "pas d'email" }}
+              </q-item-section>
+              
+                <q-item-label caption lines="1"  v-if="contact.is_company">
+                  <q-icon name="o_business" color="blue"/>
+                  Company 
+                </q-item-label >
+                <q-item-label caption lines="1"  v-else >
+                  <q-icon name="o_person" color="green"/>
+                   Individual 
+                </q-item-label >
+                
+                <q-item-label caption>
+                  (From database :  {{ contact.FromDatabase }})
+                </q-item-label>
+                
+            </q-item-section>
+            
+          </q-item-section>
+          </q-item>
+          <q-separator/>
+        </template>
+      
+      </q-list> -->
+
+    <!-- <p v-for="contact in contactsStore.contactsList" :key="contact.id">
+          {{ contact.name }}
+        </p> 
+      
+    </div>-->
+    <!-- 
     <div v-if="isContactListFetched">
       <q-virtual-scroll
         ref="virtualScrollRef"
@@ -36,8 +193,8 @@
         >
           <q-item clickable v-ripple @click="showContactCard(contact)">
             <q-item-section avatar>
-              <!-- #ToDo : Get the color by the companies name -->
-              <!-- #ToDo : Put a colored ring around the avatar from the companie name  -->
+               #ToDo : Get the color by the companies name 
+              #ToDo : Put a colored ring around the avatar from the companie name  
               <q-avatar v-if="getBase64Image(contact)">
                 <img :src="getBase64Image(contact)" />
               </q-avatar>
@@ -60,7 +217,7 @@
           </q-item>
         </q-intersection>
       </q-virtual-scroll>
-    </div>
+    </div>-->
 
     <q-page-sticky position="bottom-right" :offset="[18, 18]">
       <q-btn
@@ -110,6 +267,20 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <!-- 
+      bar sticky
+        probleme de z-index
+       le laisser en fin de page sinon c'est moche parceque ça passe en dessous de la liste
+    -->
+    <q-page-sticky expand position="top">
+      <q-toolbar
+        class="bg-primary text-white shadow-2"
+        style="min-height: 0.9375rem"
+      >
+        <text-overline> Contacts </text-overline>
+      </q-toolbar>
+    </q-page-sticky>
   </q-page>
 
   <q-dialog v-model="dialogVisible">
@@ -119,7 +290,15 @@
 
 <script>
 import axios from "axios";
-import { defineComponent, reactive, onMounted, ref, computed, inject } from "vue";
+import {
+  defineComponent,
+  reactive,
+  onMounted,
+  ref,
+  computed,
+  inject,
+  onBeforeMount,
+} from "vue";
 import { Notify, getCssVar } from "quasar";
 // import ContactPreview from '../../components/ContactPreview.vue';
 import ContactCard from "../../components/ContactCard.vue";
@@ -164,6 +343,7 @@ export default defineComponent({
     const virtualScrollRef = ref(null);
     const isContactListFetched = ref(false); // Define isContactListFetched as a ref
     const contactsStore = inject("contactsStore");
+    const authStore = inject("authStore");
     /**
      * Fetches the contact list from the server.
      *
@@ -221,6 +401,13 @@ export default defineComponent({
       }
     };
 
+    watch(
+      () => authStore.loginInfos,
+      () => {
+        contactsStore.fetchContactsList();
+      },
+      { deep: true }
+    );
 
     onMounted(() => {
       // Fetch the contact list when the component is mounted
@@ -387,6 +574,18 @@ export default defineComponent({
      * @return {void} This function does not return anything.
      */
 
+    // function and const for sliders
+    let timer
+    function finalize (reset){
+      timer= setTimeout(()=>{
+        reset()
+      }, 3000)
+    }
+
+    onBeforeMount(() => {
+      clearTimeout(timer)
+    });
+
     return {
       state,
       fetchContactList,
@@ -407,9 +606,17 @@ export default defineComponent({
       virtualScrollRef,
       contactsStore,
 
+      // function for slider one for each slide direction
+      onLeft ({ reset }) {
+        finalize(reset)
+      },
+
+      onRight ({ reset }) {
+        finalize(reset)
+      },
+
       watch,
     };
   },
 });
 </script>
-src/stores/ContactsStore

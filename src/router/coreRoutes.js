@@ -10,19 +10,29 @@ const coreRoutes = [
   },
   {
     path: "/",
-    component: () => import("layouts/MainLayout.vue"),
+    component: () => import("layouts/MainLayout.vue"), 
+    
+    meta: {
+      requiresAuth: true,
+    },
     children: [
 
 
       {
         path: "dashboard",
-name: "Dashboard",
+        name: "Dashboard",
         component: () => import("pages/core/DashboardPage.vue"),
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         path: "notification",
-name: "Notification",
+        name: "Notification",
         component: () => import("pages/core/NotificationPage.vue"),
+        meta: {
+          requiresAuth: true,
+        },
       },
     ],
   },

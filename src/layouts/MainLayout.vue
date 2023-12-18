@@ -1,71 +1,62 @@
 "
 <template>
-  <q-layout view="hHh Lpr lff">
-    <q-header elevated class="bg-primary text-white">
+  <q-layout view="hHh lpR fFf">
+    <q-header elevated class="bg-grey-3 text-white">
       <q-toolbar>
-        <q-btn flat icon="o_menu" size="md" @click="leftDrawer = !leftDrawer" />
+        
 
         <!-- <SearchBar>
         </SearchBar> -->
 
-        <q-btn
-          flat
-          round
-          @click="$q.dark.toggle()"
-          :icon="$q.dark.isActive ? 'o_nights_stay' : 'o_wb_sunny'"
-        >
-        </q-btn>
+        
 
-        <q-btn @click="contactsStore.fetchContactsList()"> Get Contacts </q-btn>
+        <q-btn flat rounded @click="fetchContactsStore"> Get Contacts </q-btn>
+        <q-btn flat rounded @click="fetchTaskStore"> Get Tasks </q-btn>
 
-        <q-btn flat icon="o_account_circle" class="on-left" size="md">
-          <q-menu>
-            <div class="row no-wrap q-pa-md">
-              <div class="column items-center">
-                <q-avatar size="72px">
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
-                </q-avatar>
-
-                <div class="text-subtitle1 q-mt-md q-mb-xs">Administrator</div>
-                <div class="text-subtitle1 q-mb-xs">app.alusage.fr</div>
-
-                <q-separator vertical inset class="q-mx-lg" />
-                <q-btn
-                  color="primary"
-                  label="Logout"
-                  push
-                  size="sm"
-                  v-close-popup
-                />
-              </div>
-            </div>
-          </q-menu>
-        </q-btn>
+        <UserModal/>
 
         <q-btn
+        rounded
           flat
           icon="o_settings"
           class="on-left"
           size="md"
-          @click="toggleSettingsDrawer"
+          @click="drawer = !drawer"
         />
       </q-toolbar>
     </q-header>
-
+    <!-- left drawer -->
     <q-drawer
       v-model="leftDrawer"
       side="left"
       show-if-above
-      :mini="miniState"
+
+      :mini= "miniState"
       @mouseover="miniState = false"
       @mouseout="miniState = true"
-      :width="200"
+      
+      :width="270"
       :breakpoint="500"
-      bordered
     >
       <q-scroll-area class="fit">
-        <q-list padding>
-          <q-item
+        <q-list v-for="(info, index) in authStore.loginInfos" :key="index" padding>
+
+          <q-item clickable v-ripple><!-- icone &|| infos sur base de données visible pendant le ministate-->
+            <q-item-section avatar> 
+              <q-checkbox checked-icon="dns" unchecked-icon="dns" v-model="info.isChecked" :label="info.db"/>
+            </q-item-section>
+
+            <q-item-section> <!-- infos de base de données cachée pendant le mini state du tiroir-->
+              login :  {{ info.login }}
+              url : {{ info.url }}
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
+          
+          
+          <!-- <q-item
             clickable
             v-ripple
             :active="isRouteActive('/dashboard')"
@@ -129,10 +120,9 @@
             </q-item-section>
 
             <q-item-section> Task </q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
+          </q-item> -->
+       
+    <!-- right drawer -->
     <q-drawer
       v-model="settingsDrawerOpen"
       side="right"
@@ -152,7 +142,12 @@
     </q-drawer>
 
     <q-footer elevated>
-      <q-toolbar> </q-toolbar>
+      <q-toolbar> 
+        <q-toolbar-title>
+          <q-btn flat icon="o_menu" size="md" @click="leftDrawer = !leftDrawer" />
+          <q-btn falt icon="o_home" size="md" @click="navigateToPage('/dashboard')"/>
+        </q-toolbar-title>
+      </q-toolbar>
     </q-footer>
 
     <q-page-container>
@@ -162,66 +157,72 @@
 </template>
 
 <script>
+import { ref , onMounted, reactive, watch, provide } from 'vue'
+import { useRoute, useRouter, } from 'vue-router'
+import { useContactsStore } from 'src/stores/ContactsStore'
+import { useTasksStore } from 'src/stores/TasksStore'
+import { useAuthStore } from 'src/stores/AuthStore'
+// import axios from 'axios'
 // import { useQuasar } from 'quasar'
-import { ref, onMounted, watch, reactive, provide } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
-// import { useQuasar } from 'quasar'
-// import SearchBar from '../components/SearchBar.vue'
-import { useContactsStore } from "src/stores/ContactsStore";
-import { useTasksStore } from "src/stores/TasksStore";
+import  UserModal  from 'src/components/UserModal.vue'
 
 export default {
-  name: "MainLayout",
-  // components: {
-  //   SearchBar,
-  // },
-  // data(){
-  //   return {
-  //     isContactSelected: false,
-  //     selectedContact: null,
-  //   }
-  // },
-  // methods: {
-  //   handleContactSelected(contact){
-  //     this.selectedContact = contact
-  //     this.isContactSelected = true
-  //   },
-
-  // },
-  // computed: {
-  //   selectedContact(){
-  //     return this.$store.getter['contacts/getContactById'](0);
-  //   }
-  // },
+  name: 'MainLayout',
+  components: {
+    UserModal,
+  },
   setup() {
     const state = reactive({
-      Uapikey: "admin",
-      Udb: "odoo",
-      UmyId: "2",
+      // Uapikey: "admin",
+      // Udb: "odoo",
+      // UmyId: "2",
       servers: [],
       rowsApi: ref([]),
-      // contactsList: []
+      contactsList: []
     });
 
     const contactsStore = useContactsStore();
     const tasksStore = useTasksStore();
+    const authStore = useAuthStore();
+
+    console.log(authStore.isLoggedIn)
+
+    const userId = authStore.user 
+    console.log(userId);
 
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
     const miniState = ref(true);
+
+    
+
+
     const pageTitle = ref("");
 
     const router = useRouter();
     const route = useRoute();
 
     onMounted(() => {
+      authStore.readUserFromLocalStorage();
+      console.log(authStore.user);
       contactsStore.ReadContactsFromLocalStorage();
       tasksStore.ReadTasksFromLocalStorage();
     });
 
+    // Watch loginInfos and update local storage whenever it changes
+    watch(() => authStore.loginInfos, () => {
+    localStorage.setItem('loginInfos', JSON.stringify(authStore.loginInfos));
+    
+    }, 
+    { deep: true })  // Use deep watcher to watch changes in object properties
+
+
     provide("contactsStore", contactsStore);
     provide("tasksStore", tasksStore);
+    provide("authStore", authStore);
+
+    const fetchTaskStore = tasksStore.fetchTasksList;
+    const fetchContactsStore = contactsStore.fetchContactsList;
 
     watch(route, (newRoute) => {
       pageTitle.value = newRoute.name; // update pageTitle with the new route's name
@@ -232,44 +233,52 @@ export default {
     const isRouteActive = (path) => {
       return route.path === path;
     };
-    const fetchServerList = async () => {
-      try {
-        const options = {
-          method: "POST",
-          url: "https://apps.alusage.fr/jsonrpc",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: {
-            jsonrpc: "2.0",
-            params: {
-              service: "object",
-              method: "execute_kw",
-              args: [
-                state.Udb,
-                state.UmyId,
-                state.Uapikey,
-                "x_server_login",
-                "search_read",
-                [[["x_local_user_id", "=", Number(state.UmyId)]]],
-              ],
-            },
-          },
-        };
-        const responseServer = await axios.request(options);
-        state.servers = responseServer.data.result;
 
-        console.log(state.servers);
-      } catch (error) {
-        console.error(error);
+    const redirectToLogin = () => {
+      if (authStore.isLoggedIn.valueOf()  == false ) {
+        router.push("/")
       }
-    };
+    }
+    // const fetchServerList = async () => {
+    //   try {
+    //     const options = {
+    //       method: "POST",
+    //       url: "https://apps.alusage.fr/jsonrpc",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       data: {
+    //         jsonrpc: "2.0",
+    //         params: {
+    //           service: "object",
+    //           method: "execute_kw",
+    //           args: [
+    //             state.Udb,
+    //             state.UmyId,
+    //             state.Uapikey,
+    //             "x_server_login",
+    //             "search_read",
+    //             [[["x_local_user_id", "=", Number(state.UmyId)]]],
+    //           ],
+    //         },
+    //       },
+    //     };
+    //     const responseServer = await axios.request(options);
+    //     state.servers = responseServer.data.result;
+
+    //     console.log(responseServer.data.result);
+        
+    //     console.log(state.servers);
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // };
 
     onMounted(async () => {
-      await fetchServerList();
-      //  await  contactsStore.fetchContactsList()
+      // await fetchServerList();
+       await contactsStore.fetchContactsList()
       // isContactsListLoaded.value = true;
-      // await taskStore.fetchTasksList()
+      await tasksStore.fetchTasksList()
     });
 
     return {
@@ -277,9 +286,10 @@ export default {
       leftDrawer,
       settingsDrawerOpen,
       miniState,
+  
       navigateToPage,
       isRouteActive,
-      fetchServerList,
+      // fetchServerList,
       pageTitle,
       toggleSettingsDrawer() {
         settingsDrawerOpen.value = !settingsDrawerOpen.value;
@@ -287,6 +297,12 @@ export default {
       // contactsList,
       tasksStore,
       contactsStore,
+      fetchTaskStore,
+      fetchContactsStore,
+      authStore,
+      redirectToLogin,
+      userId,
+      UserModal
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,
@@ -296,14 +312,14 @@ export default {
 </script>
 
 <style lang="scss">
-.q-toolbar {
-  background-color: $color-primary-light;
-  color: $color-on-primary-light;
+.q-toolbar{
+  background-color: $q-primary;
+  color: white;
 }
 
-.q-avatar {
-  background-color: $color-primary-light;
-  color: $color-on-primary-light;
+.q-avatar{
+  background-color: $q-primary;
+  color: white;
 }
+
 </style>
-src/stores/TasksStore
