@@ -51,8 +51,11 @@ export const useTasksStore = defineStore({
                 const response = await axios.request(options);
                 if(response.data.result) {
 
-                    // Add a from database proprity to each tasks
-                    const tasks = response.data.result.map(task => ({ ...task, FromDatabase: info.db}))
+                    // Add a from database proprity to each tasks and clean descriptions 
+                    const tasks = response.data.result.map(task => ({ ...task, 
+                        FromDatabase: info.db, // add the from database
+                        description: task.description.replace(/<[^>]*>/g, "") // apply a regex to clean the description   
+                    }))
                     this.tasksList = this.tasksList.concat(tasks); 
                     
                     localStorage.setItem("tasksList", JSON.stringify(this.tasksList));
@@ -68,8 +71,14 @@ export const useTasksStore = defineStore({
         ReadTasksFromLocalStorage() {
             const storedTasks = localStorage.getItem('tasksList');
             if (storedTasks) {
-                this.tasksList = JSON.parse(storedTasks);
+                const tasks = JSON.parse(storedTasks);
+                console.log("lecture reussi")
+
+                this.tasksList = tasks 
+
+            } else {
+                console.log("lecture échouée")
             }
-        }
+        },
     },
 });

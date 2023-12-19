@@ -23,6 +23,8 @@
           <q-item-label caption>
             From db : {{ task.FromDatabase }}
           </q-item-label>
+          <q-separator/>
+            {{ task.description  }}
         </q-item-section>
       </q-item>
       </q-slide-item>
@@ -35,7 +37,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
-import { defineComponent, inject, watch, onBeforeMount } from 'vue';
+import { defineComponent, inject, watch, onBeforeMount, ref } from 'vue';
 
 export default defineComponent({
   name: 'tasksPage',
@@ -49,6 +51,10 @@ export default defineComponent({
     const $q = useQuasar(); 
     const tasksStore = inject("tasksStore");
     const authStore = inject("authStore");
+    const cleanTaskDescriptions = ref([]);
+
+   
+    
 
     let timer
     function finalize (reset){
@@ -63,12 +69,14 @@ export default defineComponent({
 
     // Watch loginInfos and update local storage whenever it changes
     watch(() => authStore.loginInfos, () => {
-      tasksStore.fetchTasksList();
+      tasksStore.ReadTaskFromLocalStorage;
+       cleanTaskDescriptions.value = tasksStore.tasksList.map(task => task.description.replace(/<[^>]*>/g, ""))
     }, 
     { deep: true })  // Use deep watcher to watch changes in object properties
 
     return {
       tasksStore,
+      cleanTaskDescriptions,
 
       onLeft ({ reset }) {
         $q.notify('Timer started, task is in progress')

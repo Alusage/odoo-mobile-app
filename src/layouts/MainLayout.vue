@@ -120,10 +120,10 @@ export default {
     const tasksStore = useTasksStore();
     const authStore = useAuthStore();
 
-    console.log(authStore.isLoggedIn)
+    
 
     const userId = authStore.user 
-    console.log(userId);
+  
 
     const leftDrawer = ref(false);
     const settingsDrawerOpen = ref(false);
@@ -237,7 +237,8 @@ export default {
       authStore,
       redirectToLogin,
       userId,
-      UserModal
+      UserModal,
+
       // tasksStore,
       // isContactsListLoaded,
       // localStorage,
