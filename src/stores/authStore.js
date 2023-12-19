@@ -22,15 +22,7 @@ export const useAuthStore = defineStore({
     isAuthenticated: (state) => !!state.user && state.user.isLoggedIn,
   },
   actions: {
-/**
- * Logs in the user with the provided credentials.
- *
- * @param {Object} options - The options for the login request.
- * @param {string} options.db - The name of the database.
- * @param {string} options.login - The user's login.
- * @param {string} options.password - The user's password.
- * @return {Promise<void>} - A promise that resolves when the login is successful.
- */
+
     async login( { url, db, login, password} ) {
 
       const storedLoginInfos = localStorage.getItem('loginInfos');
@@ -65,12 +57,14 @@ export const useAuthStore = defineStore({
           this.loginError = "";
 
           localStorage.setItem('user', JSON.stringify(this.user)); // user infos
+          
+
+
+          this.user = { id: response.data.result , isLogged : true }
+          localStorage.setItem('user', JSON.stringify(this.user))
           console.log('User logged in:', this.user);
 
-
-          this.user = { ...this.user, isLogged : true}
-          localStorage.setItem('user', JSON.stringify(this.user))
-
+          
         // check if loginInfos aren't already existing before storing it in local storage 
           const newLoginInfo = { url, db, login, password, isChecked: false};
 

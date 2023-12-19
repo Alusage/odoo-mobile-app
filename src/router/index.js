@@ -30,8 +30,10 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     const auth = useAuthStore() 
+    const userLocalStorage = auth.readUserFromLocalStorage()
+
     if(to.matched.some(record => record.meta.requiresAuth)){
-      if(!auth.isLoggedIn){
+      if(userLocalStorage && !userLocalStorage.isLogged){
         next({ name: 'Login' })
         console.log("redirection car déconnecté")
       } else {
