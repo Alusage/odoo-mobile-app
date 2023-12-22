@@ -46,10 +46,10 @@
           <!-- Displaying the label and ID of the option -->
           {{ contacts.opt.label }} {{ contacts.opt.id }} 
           <q-item-section v-if="contacts.opt.isCompany">
-            Entreprise
+            Entreprise, {{ contacts.opt.fromDb }}
           </q-item-section>
           <q-item-section v-else>
-            Particulier
+            Particulier, {{ contacts.opt.fromDb }}
           </q-item-section>
           
         </q-item-section>
@@ -71,9 +71,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, watchEffect } from 'vue';
+import { defineComponent, ref, watchEffect, inject, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import axios from 'axios';
+
 
 
 export default defineComponent({
@@ -81,88 +81,35 @@ export default defineComponent({
   name: 'SearchBar',
   
   setup() {
-    const { text, inputLabel, options, filteredOptions, search,filter } = useSearchBarLogic();
+    
     const route = useRoute();
+
+    const authStore = inject('authStore')
+    const contactStore = inject('contactsStore')
+    const tasksStore = inject('tasksStore')
+
+    const { text, inputLabel, options, filteredOptions, search, filter } = useSearchBarLogic();
+    
+    onMounted(() => {
+      contactStore.ReadContactsFromLocalStorage
+      tasksStore.ReadContactsFromLocalStorage
+      
+    })
 
     // Watch for changes in the route and update the input label accordingly
     watchEffect(() => {
       inputLabel.value = "Search in" + " " + `${route.name || 'Unknown Page'}`;
     });
 
-    return {
-      text,
-      inputLabel,
-      options,
-      filteredOptions,
-      search,
-      filter,
-      useSearchBarLogic,
-    };
-  },
-    
-});
-
-function useSearchBarLogic() {
+    function useSearchBarLogic() {
   // Reactive references for the search bar state
   const text = ref('');
   const inputLabel = ref(`Search in`);
   const options = ref(null);
   const filteredOptions = ref([]);
   const search = ref(null);
-  const isContactListFetched = ref(false);
 
-  /** 
-   * Function to fetch options for the dropdown. 
-   * @param {Array} domain - Domain for fetching options.
-   * @returns {Object} - Response from the API.
-   */
-  async function fetchOptions(domain) {
-    try {
-      const dataOptions = {
-        method: 'POST',
-        url: 'https://apps.alusage.fr/jsonrpc',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: {
-          jsonrpc: '2.0',
-          params: {
-            service: 'object',
-            method: 'execute_kw',
-            args: [
-              'odoo',
-              '2',
-              'admin',
-              'res.partner',
-              'search_read',
-              [domain],
-              {
-                fields: ['name', 'email_normalized', 'phone', 'mobile', 'image_1920', 'street', 'street2', 'zip', 'city', 'write_date', 'function', 'is_company', 'commercial_company_name'],
-              }
-            ]
-          }
-        }
-      };
-      const response = await axios.request(dataOptions);
-      options.value = response.data.result;
-      isContactListFetched.value = true;
-      filteredOptions.value = options.value.map((op) => ({ 
-        label: op.name, //Attribution of name property as label for the q-item
-        value: op.id,
-        isCompany: op.is_company, // attribution of is_company property for the q-item
-      }));
-    } catch (error) {
-      console.error(error);
-    }
-
-    
-  }
-
-  /**
-   * Function to filter options based on user input.
-   * @param {string} val - User input for filtering options.
-   * @param {Function} update - Function to update the filtered options.
-   */
+  
   function filter(val, update) {
     // Handle empty input
     if (val === '') {
@@ -174,7 +121,17 @@ function useSearchBarLogic() {
 
     // Filter options based on user input
     update(() => {
-      fetchOptions(['|', ['name', 'ilike', val], ['email_normalized', 'ilike', val]]);
+      
+      const filteredContacts = contactStore.contactsList.filter(contact => contact.name.includes(val) || (typeof contact.email === 'string' && contact.email.includes(val)))
+
+      filteredOptions.value = filteredContacts.map(contact => ({
+        label : contact.name,
+        value : contact.id,
+        isCompany: contact.is_company,
+        fromDb: contact.fromDatabase,
+      }))
+
+      // fetchOptions(['|', ['name', 'ilike', val], ['email_normalized', 'ilike', val]]);
     });
   }
 
@@ -188,4 +145,22 @@ function useSearchBarLogic() {
     filter,
   };
 }
+
+    return {
+      text,
+      inputLabel,
+      options,
+      filteredOptions,
+      search,
+      filter,
+      useSearchBarLogic,
+      authStore,
+      contactStore,
+      tasksStore,
+    };
+  },
+    
+});
+
+
 </script>

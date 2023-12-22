@@ -1,12 +1,12 @@
 "
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-grey-3 text-white">
+    <q-header elevated class="bg-grey-3 text-white justify-around">
       <q-toolbar>
         
 
-        <!-- <SearchBar>
-        </SearchBar> -->
+        <SearchBar>
+        </SearchBar>
 
         
 
@@ -100,11 +100,13 @@ import { useAuthStore } from 'src/stores/AuthStore'
 // import axios from 'axios'
 // import { useQuasar } from 'quasar'
 import  UserModal  from 'src/components/UserModal.vue'
+import SearchBar from 'src/components/SearchBar.vue'
 
 export default {
   name: 'MainLayout',
   components: {
     UserModal,
+    SearchBar,
   },
   setup() {
     const state = reactive({
@@ -238,6 +240,7 @@ export default {
       redirectToLogin,
       userId,
       UserModal,
+      SearchBar,
 
       // tasksStore,
       // isContactsListLoaded,
